@@ -10,6 +10,8 @@
     brandFallback: (b, s, leaf) => `ל-${L(b)} אין גרסה ל-${L(s)} — הפרופיל יורש עכשיו מ-${L(leaf)}. כדאי לבדוק מהירויות וקירור.`,
     flattened: () => "לפרופיל אין אב (ייצוא מלא) — עדכנתי את רשימת המדפסות שלו; הערכים נשארו כמו שהם.",
     newVariants: (s, list) => `ל-${L(s)} יש סוגי דיזה שלא היו במדפסת המקורית (${L(list)}) — הם יורשים את ערכי המערכת.`,
+    machineKeys: (s, list) => `נשארו ערכי קירור/תא/זרימה שכיוונת למדפסת הישנה: ${L(list)}. כדאי לבדוק אותם ב-${L(s)}, או לסמן "איפוס" כדי לקבל את ברירות המחדל שלה.`,
+    machineReset: (s, list) => `ערכי הקירור/תא/זרימה אופסו לברירות המחדל של ${L(s)}: ${L(list)}.`,
   } : { dl: "Download", all: "Download all as one .zip", fail: "Could not port:", noParent: "no parent", retarget: "printer list retargeted", err: (m) => m };
 
   const order = ["H2S", "H2D", "H2D Pro", "H2C", "P2S", "X2D", "A2L", "A1", "A1 mini", "P1S", "P1P", "X1 Carbon", "X1", "X1E"];
@@ -20,7 +22,7 @@
   async function run(files) {
     last = files.length ? [...files] : last;
     const rows = await Promise.all(last.map(async (f) => {
-      try { return { f, r: portPreset(JSON.parse(await f.text()), $("#model").value) }; } catch (e) { return { f, err: e.message }; }
+      try { return { f, r: portPreset(JSON.parse(await f.text()), $("#model").value, BBL_MAP, { resetMachine: $("#reset").checked }) }; } catch (e) { return { f, err: e.message }; }
     }));
     const ok = rows.filter((x) => x.r), seen = {};
     for (const { r } of ok) { // Studio keys presets by name — duplicates would overwrite each other on import
@@ -46,7 +48,7 @@
   }
   const drop = $("#drop");
   drop.onclick = () => $("#pick").click(); drop.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("#pick").click(); } };
-  $("#pick").onchange = (e) => run(e.target.files); $("#model").onchange = () => run([]);
+  $("#pick").onchange = (e) => run(e.target.files); $("#model").onchange = $("#reset").onchange = () => run([]);
   ["dragover", "dragleave", "drop"].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.toggle("on", t === "dragover"); if (t === "drop") run(e.dataTransfer.files); }));
   window.porterRun = run; // for tests
 })();

@@ -25,6 +25,7 @@ A user preset stores only your changes and `inherits` everything else from a sys
 ```bash
 npx github:OMRITGM/preset-porter --to H2S -o ported/ "My PETG.json" "My ABS.json"
 npx github:OMRITGM/preset-porter --list        # supported printers
+npx github:OMRITGM/preset-porter --to H2S --reset-cooling "My ABS.json"   # take the new printer's fan/chamber/flow defaults
 ```
 
 Runs straight from this repo — no install, no registry setup, no dependencies.
@@ -46,7 +47,7 @@ const { preset, notes } = portPreset(JSON.parse(fs.readFileSync("My PETG.json", 
 
 | Path | Role |
 |---|---|
-| `porter-core.js` | `portPreset(preset, model, map)` — pure function, runs in Node and the browser. |
+| `porter-core.js` | `portPreset(preset, model, map, { resetMachine })` — pure function, runs in Node and the browser. |
 | `bbl-map.js` | Generated. Printer → nozzle variants, preset family → per-printer preset, per-variant keys. Names and array shapes only — no Bambu profile content is copied. |
 | `tools/build-bbl-map.py` | Regenerates `bbl-map.js` from a local Bambu Studio install (`npm run build:map`). Run after a Studio update. |
 | `index.js`, `bin/cli.js` | Node entry point and CLI. |

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.0 — 2026-09-21
+
+- **Cooling/chamber overrides are flagged.** A preset tuned on one machine (e.g. low part-cooling for ABS on an unheated P1S) would carry those values to a printer with a heated chamber and cancel its defaults. The porter now lists every overridden fan, chamber and max-volumetric-speed key so you can review it.
+- **Optional reset:** tick *Reset cooling, chamber & flow* (web) or pass `--reset-cooling` (CLI) / `{ resetMachine: true }` (Node) to drop those overrides and take the target printer's system values. Temperatures, flow ratio and pressure advance are kept. Thanks to Gerrit on the Bambu forum for the report.
+
 ## 1.1.0 — 2026-09-21
 
 - **Download all → one `.zip`.** Bambu Studio's *Import Configs* takes the zip directly, so porting a whole library is one download and one import (verified on a real H2S).

@@ -1,6 +1,6 @@
 {
   "name": "@omritgm/preset-porter",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Port Bambu Studio filament presets between printers - fixes presets stuck under \"Unsupported\" after moving to an H2S, H2D, H2C, P2S or X2D.",
   "keywords": ["bambu-lab", "bambu-studio", "3d-printing", "filament", "preset", "orcaslicer"],
   "homepage": "https://3d.omrielcharizi.com/porter",

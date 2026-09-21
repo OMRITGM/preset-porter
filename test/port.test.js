@@ -41,3 +41,13 @@ test("material unsupported on target is an error, unknown printer is an error", 
   assert.throws(() => portPreset({ name: "A", inherits: "Generic PLA" }, "Bambu Lab Z9"), /Unknown printer/);
   assert.ok(printers.includes("Bambu Lab H2S"));
 });
+
+test("cooling/chamber overrides are flagged, or reset on request", () => {
+  const src = { name: "ABS P1S", inherits: "Bambu ABS @BBL X1C", fan_max_speed: ["20"], chamber_temperatures: ["0"], nozzle_temperature: ["255"] };
+  const kept = portPreset(src, "Bambu Lab H2S");
+  assert.equal(kept.preset.fan_max_speed[0], "20");
+  assert.ok(kept.notes.some((n) => /fan_max_speed, chamber_temperatures/.test(n)));
+  const reset = portPreset(src, "Bambu Lab H2S", { resetMachine: true });
+  assert.ok(!("fan_max_speed" in reset.preset) && !("chamber_temperatures" in reset.preset));
+  assert.equal(reset.preset.nozzle_temperature[0], "255");
+});

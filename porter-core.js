@@ -1,6 +1,10 @@
 // Ports a Bambu Studio user filament preset to another Bambu printer. Pure function, used by the web UI (porter-ui.js) and the CLI (bin/cli.js).
 // Why presets break: `inherits` names a system preset bound to ONE printer family, and per-extruder-variant arrays must match the target's variant list.
-function portPreset(src, model, MAP = BBL_MAP) {
+// Values tuned to the SOURCE machine's cooling/chamber/hotend (e.g. low fan for ABS on an unheated P1S) - wrong on a printer with a heated chamber.
+const MACHINE_KEYS = ["fan_min_speed", "fan_max_speed", "fan_cooling_layer_time", "full_fan_speed_layer", "overhang_fan_speed", "overhang_fan_threshold",
+  "close_fan_the_first_x_layers", "reduce_fan_stop_start_freq", "additional_cooling_fan_speed", "slow_down_layer_time", "slow_down_min_speed",
+  "activate_air_filtration", "during_print_exhaust_fan_speed", "complete_print_exhaust_fan_speed", "chamber_temperatures", "filament_max_volumetric_speed"];
+function portPreset(src, model, MAP = BBL_MAP, opts = {}) {
   const notes = [], codes = [], out = JSON.parse(JSON.stringify(src));
   const note = (code, text, ...args) => { notes.push(text); codes.push({ code, args }); };
   const tgtVariants = MAP.printers[model];
@@ -40,11 +44,16 @@ function portPreset(src, model, MAP = BBL_MAP) {
   const added = want.filter((v) => !srcVariants.includes(v) && srcVariants.length > 1);
   if (added.length && varKeys.length) note("newVariants", `${short} has nozzle variants the source never defined (${added.join(", ")}) - those inherit the system values.`, short, added.join(", "));
 
-  // 3. identity
+  // 3. machine-tuned overrides: reset to the target's system values, or flag them for review
+  const tuned = MACHINE_KEYS.filter((k) => k in out);
+  if (tuned.length && opts.resetMachine && parent) { tuned.forEach((k) => delete out[k]); note("machineReset", `Reset ${tuned.length} cooling/chamber/flow overrides to ${short} defaults: ${tuned.join(", ")}.`, short, tuned.join(", ")); }
+  else if (tuned.length) note("machineKeys", `Kept your overrides tuned for the old printer's cooling/chamber: ${tuned.join(", ")}. Review them on ${short}, or use the reset option to take its defaults.`, short, tuned.join(", "));
+
+  // 4. identity
   out.name = `${src.name || "preset"} @${short}`;
   out.filament_settings_id = [out.name];
   out.from = "User";
   for (const k of ["setting_id", "base_id", "user_id", "updated_time"]) delete out[k];
   return { preset: out, notes, noteCodes: codes, parent, newParent: out.inherits || null };
 }
-if (typeof module !== "undefined") module.exports = { portPreset };
+if (typeof module !== "undefined") module.exports = { portPreset, MACHINE_KEYS };

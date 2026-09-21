@@ -19,7 +19,8 @@
       <p class="lead">Switched Bambu Lab printers and your calibrated presets landed under <b>Unsupported presets</b>? Drop them here, pick the new printer, import the result.</p>
     </div></section>
 
-    <div class="filters"><label for="model">Target printer</label> <select id="model"></select></div>
+    <div class="filters"><label for="model">Target printer</label> <select id="model"></select>
+      <label><input type="checkbox" id="reset"> Reset cooling, chamber &amp; flow to the new printer's defaults</label></div>
     <div id="drop" tabindex="0" role="button" aria-label="Choose filament preset JSON files">Drop filament preset <code>.json</code> files here, or click to choose<br><small>Files are processed in your browser and never uploaded.</small></div>
     <input type="file" id="pick" accept=".json" multiple hidden>
     <section id="out"></section>
