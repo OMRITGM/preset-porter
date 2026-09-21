@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.0 — 2026-09-21
+
+- **Download all → one `.zip`.** Bambu Studio's *Import Configs* takes the zip directly, so porting a whole library is one download and one import (verified on a real H2S).
+- Presets that would end up with the same name get a numeric suffix — Studio keys presets by name, so duplicates used to overwrite each other.
+- **Hebrew UI** at [/porter-he](https://3d.omrielcharizi.com/porter-he), with translated notes and errors.
+- Security: strict Content-Security-Policy and security headers; escaped error output in the Hebrew UI; hardened download counter (same-origin only, allow-listed values, bounded storage).
+- Accessibility: keyboard-operable drop zone, labelled controls.
+
 ## 1.0.0 — 2026-09-21
 
 First public release.

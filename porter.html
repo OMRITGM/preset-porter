@@ -28,7 +28,7 @@
     <ol class="check">
       <li>Windows: <code>%APPDATA%\BambuStudio\user\&lt;id&gt;\filament</code> · macOS: <code>~/Library/Application Support/BambuStudio/user/&lt;id&gt;/filament</code></li>
       <li>Take the <code>.json</code> files (ignore <code>.info</code>). Presets shared by filament makers work too.</li>
-      <li>Import the result with <b>File → Import → Import Configs</b> while the new printer is selected. It appears under <b>User presets → Custom</b>.</li>
+      <li>Import the result with <b>File → Import → Import Configs</b> while the new printer is selected — a single <code>.json</code>, or the whole <code>.zip</code> from <b>Download all</b> in one go. They appear under <b>User presets → Custom</b>.</li>
     </ol>
 
     <h2>What it actually changes</h2>
@@ -40,6 +40,6 @@
     <p class="note">Built against Bambu Studio <span id="ver"></span> system profiles. Tested on a real H2S: presets made for P1S, X1C and A1 that were stuck under Unsupported showed up under Custom after porting, calibrated flow ratio intact. Other targets are generated from the same data but not import-tested yet. Not affiliated with Bambu Lab. Found a preset it gets wrong? <a href="https://github.com/OMRITGM/preset-porter/issues">Open an issue</a> — the <a href="https://github.com/OMRITGM/preset-porter">source is on GitHub</a>, including a CLI.</p>
   </main>
   <footer><p>Made by Omri Elcharizi · part of <a href="index.html" lang="he">הדפסה ראשונה</a></p></footer>
-  <script src="bbl-map.js"></script><script src="porter-core.js"></script><script src="porter-ui.js"></script>
+  <script src="bbl-map.js"></script><script src="porter-core.js"></script><script src="zip.js"></script><script src="porter-ui.js"></script>
 </body>
 </html>
