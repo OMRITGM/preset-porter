@@ -107,10 +107,22 @@ const QUESTIONS = [
     ["נהנה לפרק, לשדרג ולכוונן", { want: ["tinker", "tinker"] }]] },
 ];
 
+// חנויות שעומרי ממליץ עליהן מניסיון אישי — בלי קשר מסחרי. רק עובדות שאומתו באתר החנות.
+const STORES = [
+  { name: "ProMaker", where: "עתיר ידע 21, כפר סבא · א׳–ה׳ 10:00–17:00", url: "https://promaker.co.il/",
+    tags: ["חנות פרטית", "Bambu · Prusa · Creality · Elegoo · Snapmaker", "eSUN · ProFilament"],
+    why: "חנות פרטית עם שירות אישי, שמביאה בעצמה את פילמנט ProFilament (ב-<a href=\"filaments.html\">דף הפילמנטים</a>) וגם eSUN. גולשים באתר המליצו עליה על שירות ומחירים ברמה של הרשתות הגדולות.",
+    watch: "ההגעה לחנות בתיאום מראש." },
+  { name: "Spider3D", where: "יבנה", url: "https://www.spider3d.co.il/",
+    tags: ["חנות פרטית", "מדפסות ופילמנט במלאי", "פילמנט במותג החנות"],
+    why: "אני לקוח קבוע ומרוצה מאוד מהשירות. מחזיקים מדפסות ופילמנט במלאי, ויש להם פילמנט PLA במותג החנות ומועדון לקוחות.",
+    watch: null },
+];
+
 const SLICERS = [
   { brand: "Bambu Lab", name: "Bambu Studio", url: "https://bambulab.com/en/download/studio" },
   { brand: "Creality / Elegoo / כללי", name: "OrcaSlicer", url: "https://github.com/OrcaSlicer/OrcaSlicer/releases" },
   { brand: "Prusa", name: "PrusaSlicer", url: "https://www.prusa3d.com/p/prusaslicer/" },
   { brand: "Creality", name: "Creality Print", url: "https://www.creality.com/download" },
 ];
-if (typeof module !== "undefined") module.exports = { SITE, PRINTERS, QUESTIONS, SLICERS };
+if (typeof module !== "undefined") module.exports = { SITE, PRINTERS, QUESTIONS, SLICERS, STORES };
