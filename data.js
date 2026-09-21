@@ -67,6 +67,7 @@ const PRINTERS = [
       { store: "Bug", label: "קומבו AMS 2 Pro", ils: 4890, url: BUG + "bambulab/x2d/combo" },
       { store: "Copytech", label: "קומבו AMS 2 Pro", ils: 5080, url: "https://www.copytech.co.il/items/9107683" },
       { store: "3DbotX", label: "קומבו AMS 2 Pro", ils: 5090, url: BOTX + "bambu-lab-x2d-combo-3d-printer" },
+      { store: "Yazamco", label: "קומבו", ils: 5310, url: "https://3dny.co.il/product/%d7%9e%d7%93%d7%a4%d7%a1%d7%aa-%d7%aa%d7%9c%d7%aa-%d7%9e%d7%99%d7%9e%d7%93-bambu-lab-x2d-combo/" },
       { store: "ProMaker", label: "קומבו AMS 2 Pro", ils: 4990, url: "https://promaker.co.il/product/bambu-lab-x2d-%D7%A9%D7%AA%D7%99-%D7%93%D7%99%D7%96%D7%95%D7%AA-%D7%AA%D7%9E%D7%99%D7%9B%D7%95%D7%AA-%D7%A0%D7%A7%D7%99%D7%95%D7%AA-%D7%99%D7%95%D7%AA%D7%A8-%D7%95%D7%94%D7%A8%D7%91%D7%94-%D7%A4/" },
       { store: "Spider3D", label: "קומבו AMS 2 Pro", ils: 5200, url: "https://www.spider3d.co.il/bambu-lab-x2d-%D7%94%D7%93%D7%A4%D7%A1%D7%94-%D7%9B%D7%A4%D7%95%D7%9C%D7%94-%D7%97%D7%9B%D7%9E%D7%94-%D7%95%D7%90%D7%99%D7%9B%D7%95%D7%AA-%D7%A4%D7%A8%D7%99%D7%9E%D7%99%D7%95%D7%9D-%D7%9E/" }] },
   { id: "u1", name: "Snapmaker U1", build: "270×270×270", tags: ["color", "nowaste", "easy"],
@@ -95,11 +96,12 @@ const PRINTERS = [
       { store: "Spider3D", label: "קומבו CFS", ils: 6990, url: "https://www.spider3d.co.il/creality-k2-plus-cfs-combo/" }] },
   { id: "h2s", name: "Bambu Lab H2S", build: "340×320×340", tags: ["enclosed", "color", "big", "eng", "easy", "quiet"],
     why: "משטח גדול, סגורה, אמינות של Bambu. למי שיודע שיצטרך גודל.",
-    watch: "מחיר. בארץ נמכרת רק כקומבו. למתחיל שלא בטוח — A1 או P2S קודם.",
+    watch: "מחיר. בארץ נמכרת רק כקומבו. למתחיל שלא בטוח — A1 או P2S קודם. בגרסת הלייזר: עשן ולכלוך בכל המדפסת — ניקוי תכוף ואוורור חובה.",
     zap: "https://www.zap.co.il/model.aspx?modelid=1263757", prices: [
       { store: "Copytech", label: "קומבו AMS 2 Pro", ils: 6950, url: "https://www.copytech.co.il/items/8484289" },
       { store: "3DbotX", label: "קומבו AMS 2 Pro", ils: 6990, url: BOTX + "bambu-lab-h2s-ams-2-pro-combo" },
       { store: "Bug", label: "קומבו AMS 2 Pro", ils: 6990, url: BUG + "bambulab/h2s/ams/combo" },
+      { store: "Yazamco", label: "קומבו AMS 2 Pro + לייזר 10W", ils: 11449, url: "https://3dny.co.il/product/%d7%9e%d7%93%d7%a4%d7%a1%d7%aa-%d7%aa%d7%9c%d7%aa-%d7%9e%d7%99%d7%9e%d7%93-bambu-lab-h2s-laser-10w-full-combo/" },
       { store: "ProMaker", label: "קומבו AMS 2", ils: 6990, url: "https://promaker.co.il/product/bambu-lab-h2s-%D7%A2%D7%95%D7%A6%D7%9E%D7%AA-%D7%A1%D7%A8%D7%95%D7%95-%D7%93%D7%99%D7%95%D7%A7-%D7%9E%D7%95%D7%A9%D7%9C%D7%9D-%D7%95%D7%A0%D7%A4%D7%97-%D7%94%D7%93%D7%A4%D7%A1%D7%94-%D7%94%D7%92/" },
       { store: "Spider3D", label: "קומבו AMS 2 Pro, הזמנה מוקדמת", ils: 7490, url: "https://www.spider3d.co.il/bambu-lab-h2s-%D7%9E%D7%93%D7%A4%D7%A1%D7%AA-%D7%AA%D7%9C%D7%AA%D7%9E%D7%9E%D7%93-%D7%9E%D7%A7%D7%A6%D7%95%D7%A2%D7%99%D7%AA-%D7%9E%D7%94%D7%99%D7%A8%D7%94-%D7%95%D7%9E%D7%93%D7%95/" }] },
 ];
