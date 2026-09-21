@@ -23,17 +23,15 @@ A user preset stores only your changes and `inherits` everything else from a sys
 ## CLI
 
 ```bash
-npx @omritgm/preset-porter --to H2S -o ported/ "My PETG.json" "My ABS.json"
-npx @omritgm/preset-porter --list        # supported printers
+npx github:OMRITGM/preset-porter --to H2S -o ported/ "My PETG.json" "My ABS.json"
+npx github:OMRITGM/preset-porter --list        # supported printers
 ```
+
+Runs straight from this repo — no install, no registry setup, no dependencies.
 
 Your presets live in `%APPDATA%\BambuStudio\user\<id>\filament` (Windows) or `~/Library/Application Support/BambuStudio/user/<id>/filament` (macOS). Import the result with **File → Import → Import Configs** while the new printer is selected.
 
-The package is published to GitHub Packages, so point the scope at it once:
-
-```bash
-echo "@omritgm:registry=https://npm.pkg.github.com" >> ~/.npmrc
-```
+The package is also published to [GitHub Packages](https://github.com/OMRITGM/preset-porter/pkgs/npm/preset-porter) as `@omritgm/preset-porter`. GitHub's npm registry asks for a personal access token with `read:packages` even for public packages, so for one-off use the `github:` form above is simpler.
 
 ## Library
 
