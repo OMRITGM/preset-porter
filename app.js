@@ -63,29 +63,14 @@ if ($("#price-table")) {
 
 // ---- תוצאות (result.html)
 if ($("#result")) {
-  const a = (new URLSearchParams(location.search).get("a") || "").split("");
-  const picks = QUESTIONS.map((Q, i) => Q.a[a[i]]?.[1]).filter(Boolean);
-  if (picks.length !== QUESTIONS.length) location.replace("index.html");
-  else {
-  const { min = 0, max } = picks[0], want = picks.flatMap((p) => p.want || []);
-  const score = (p) => want.filter((t) => p.tags.includes(t)).length;
-  const pct = (p) => (want.length ? Math.round((score(p) / want.length) * 100) : null);
-  // שוויון בניקוד → היקרה יותר בתוך התקציב קודמת (מי שהקצה יותר מצפה ליותר)
-  const rank = (list) => list.sort((x, y) => score(y) - score(x) || minPrice(y) - minPrice(x));
-  const priced = PRINTERS.filter((p) => minPrice(p) !== null);
-  const top = rank(priced.filter((p) => minPrice(p) >= min && minPrice(p) <= max)).slice(0, 3);
-  const over = priced.filter((p) => minPrice(p) > max && minPrice(p) <= max * 1.4).sort((x, y) => minPrice(x) - minPrice(y));
-  const fill = over.slice(0, 3 - top.length);
-  // השלמה מתחת לרצפה: הכי קרובות לתקציב (היקרות), לא הכי "מתאימות" — אחרת A1 mini חוזרת לתקציב של ₪8,000
-  const under = top.length + fill.length < 3 ? priced.filter((p) => minPrice(p) < min).sort((x, y) => minPrice(y) - minPrice(x)).slice(0, 3 - top.length - fill.length) : [];
-  const stretch = rank(over.filter((p) => !fill.includes(p)))[0];
-  $("#result").innerHTML =
-    (picks.some((p) => p.resin) ? `<p class="note">למיניאטורות ברמת פירוט גבוהה שווה לבדוק גם מדפסת שרף (Resin) — טכנולוגיה אחרת, עם ריח וכימיקלים. ההמלצות כאן הן למדפסות פילמנט.</p>` : "") +
-    top.map((p, i) => card(p, i ? "" : '<p class="best">ההתאמה הכי טובה</p>', pct(p))).join("") +
-    fill.map((p) => card(p, '<p class="over">מעט מעל התקציב שבחרתם</p>', pct(p))).join("") +
-    under.map((p) => card(p, '<p class="over">זולה מהתקציב — אפשר לחסוך</p>', pct(p))).join("") +
-    (stretch && top[0] && score(stretch) > score(top[0]) ? `<h2>אם אפשר למתוח את התקציב</h2>${card(stretch, "", pct(stretch))}` : "");
-  }
+  const R = recommend(PRINTERS, QUESTIONS, (new URLSearchParams(location.search).get("a") || "").split(""));
+  if (!R) location.replace("index.html");
+  else $("#result").innerHTML =
+    (R.resin ? `<p class="note">למיניאטורות ברמת פירוט גבוהה שווה לבדוק גם מדפסת שרף (Resin) — טכנולוגיה אחרת, עם ריח וכימיקלים. ההמלצות כאן הן למדפסות פילמנט.</p>` : "") +
+    R.top.map((p, i) => card(p, i ? "" : '<p class="best">ההתאמה הכי טובה</p>', R.pct(p))).join("") +
+    R.fill.map((p) => card(p, '<p class="over">מעט מעל התקציב שבחרתם</p>', R.pct(p))).join("") +
+    R.under.map((p) => card(p, '<p class="over">זולה מהתקציב — אפשר לחסוך</p>', R.pct(p))).join("") +
+    (R.stretch ? `<h2>אם אפשר למתוח את התקציב</h2>${card(R.stretch, "", R.pct(R.stretch))}` : "");
 }
 
 // ---- קטלוג מלא (catalog.html)
