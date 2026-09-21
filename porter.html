@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;900&family=Heebo:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="solo">
   <header><a class="logo" href="porter.html">Preset <span>Porter</span></a><nav><a class="keep" href="https://github.com/OMRITGM/preset-porter">GitHub</a><a class="keep" href="porter-he.html" lang="he">עברית</a></nav></header>
   <main>
     <section class="hero"><div>
@@ -20,7 +20,7 @@
     </div></section>
 
     <div class="filters"><label for="model">Target printer</label> <select id="model"></select></div>
-    <div id="drop" tabindex="0">Drop filament preset <code>.json</code> files here, or click to choose<br><small>Files are processed in your browser and never uploaded.</small></div>
+    <div id="drop" tabindex="0" role="button" aria-label="Choose filament preset JSON files">Drop filament preset <code>.json</code> files here, or click to choose<br><small>Files are processed in your browser and never uploaded.</small></div>
     <input type="file" id="pick" accept=".json" multiple hidden>
     <section id="out"></section>
 

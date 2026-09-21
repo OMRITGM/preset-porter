@@ -1,4 +1,4 @@
-// Ports a Bambu Studio user filament preset to another Bambu printer. Pure function, used by porter.html and tools/port-test.js.
+// Ports a Bambu Studio user filament preset to another Bambu printer. Pure function, used by the web UI (porter-ui.js) and the CLI (bin/cli.js).
 // Why presets break: `inherits` names a system preset bound to ONE printer family, and per-extruder-variant arrays must match the target's variant list.
 function portPreset(src, model, MAP = BBL_MAP) {
   const notes = [], codes = [], out = JSON.parse(JSON.stringify(src));
@@ -36,7 +36,7 @@ function portPreset(src, model, MAP = BBL_MAP) {
     if (want.length === 1 && out[k][0] === "nil") out[k] = [first ?? "nil"];
     if (out[k].every((v) => v === "nil")) delete out[k];
   }
-  if (tgtVariants.length > 1) out.filament_extruder_variant = tgtVariants; else delete out.filament_extruder_variant;
+  if (tgtVariants.length > 1) out.filament_extruder_variant = [...tgtVariants]; else delete out.filament_extruder_variant;
   const added = want.filter((v) => !srcVariants.includes(v) && srcVariants.length > 1);
   if (added.length && varKeys.length) note("newVariants", `${short} has nozzle variants the source never defined (${added.join(", ")}) - those inherit the system values.`, short, added.join(", "));
 

@@ -14,3 +14,7 @@ bin
 test
 .github
 CHANGELOG.md
+node_modules
+package-lock.json
+.dev.vars
+.env

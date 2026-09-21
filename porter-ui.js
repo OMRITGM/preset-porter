@@ -1,5 +1,6 @@
 // Shared UI for porter.html (en) and porter-he.html (he). Strings are picked by <html lang>.
 (() => {
+  try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch {}
   const $ = (s) => document.querySelector(s), esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const he = document.documentElement.lang === "he", L = (s) => `<bdi dir="ltr">${esc(s)}</bdi>`;
   const T = he ? {
@@ -23,7 +24,7 @@
     }));
     const ok = rows.filter((x) => x.r);
     const notes = (r) => (he ? r.noteCodes.map((n) => T[n.code](...n.args)) : r.notes.map(esc));
-    $("#out").innerHTML = rows.map(({ f, r, err }, i) => `<article class="card"><h3><bdi>${esc(r ? r.preset.name : f.name)}</bdi></h3>${err ? `<p class="watch"><b>${T.fail}</b> ${he ? T.err(err) : esc(err)}</p>` :
+    $("#out").innerHTML = rows.map(({ f, r, err }, i) => `<article class="card"><h3><bdi>${esc(r ? r.preset.name : f.name)}</bdi></h3>${err ? `<p class="watch"><b>${T.fail}</b> ${esc(he ? T.err(err) : err)}</p>` :
       `<p class="meta" dir="ltr">${esc(r.parent || T.noParent)} → ${esc(r.newParent || T.retarget)}</p>${r.notes.length ? `<ul class="res">${notes(r).map((n) => `<li>${n}</li>`).join("")}</ul>` : ""}
        <button class="cta" data-i="${i}">${T.dl}</button>`}</article>`).join("") + (ok.length > 1 ? `<p><button class="cta" data-i="all">${T.all}</button></p>` : "");
     $("#out").onclick = (e) => {
@@ -31,7 +32,7 @@
       const picked = i === "all" ? ok : [rows[i]];
       let ref = ""; try { ref = new URL(document.referrer).hostname; } catch {}
       // anonymous count: target printer + referrer host only
-      picked.forEach(() => fetch("/api/hit", { method: "POST", body: JSON.stringify({ model: $("#model").value.slice(10), ref }), keepalive: true }).catch(() => {}));
+      fetch("/api/hit", { method: "POST", body: JSON.stringify({ model: $("#model").value.slice(10), ref, n: picked.length }), keepalive: true }).catch(() => {});
       picked.forEach(({ r }, n) => setTimeout(() => {
         const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(r.preset, null, 4)], { type: "application/json" }));
         a.download = r.preset.name.replace(/[\\/:*?"<>|]/g, "-") + ".json"; a.click(); URL.revokeObjectURL(a.href);
@@ -39,7 +40,7 @@
     };
   }
   const drop = $("#drop");
-  drop.onclick = () => $("#pick").click(); drop.onkeydown = (e) => e.key === "Enter" && $("#pick").click();
+  drop.onclick = () => $("#pick").click(); drop.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("#pick").click(); } };
   $("#pick").onchange = (e) => run(e.target.files); $("#model").onchange = () => run([]);
   ["dragover", "dragleave", "drop"].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.toggle("on", t === "dragover"); if (t === "drop") run(e.dataTransfer.files); }));
   window.porterRun = run; // for tests

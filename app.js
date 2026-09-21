@@ -43,7 +43,7 @@ if ($("#quiz")) {
       <div class="opts">${Q.a.map((a, k) => `<button data-k="${k}" data-n="${k + 1}">${a[0]}</button>`).join("")}</div>
       ${i ? '<button class="back">→ חזרה</button>' : ""}</div>`;
   };
-  const pick = (k) => { ans.push(String(k)); $(`#quiz [data-k="${k}"]`)?.classList.add("sel"); setTimeout(step, 140); };
+  const pick = (k) => { ans.push(String(k)); $(`#quiz [data-k="${k}"]`)?.classList.add("sel"); setTimeout(() => { step(); $("#quiz .opts button")?.focus({ preventScroll: true }); }, 140); };
   $("#quiz").addEventListener("click", (e) => {
     const b = e.target.closest("button");
     if (b?.dataset.k) pick(b.dataset.k);
@@ -65,7 +65,8 @@ if ($("#price-table")) {
 if ($("#result")) {
   const a = (new URLSearchParams(location.search).get("a") || "").split("");
   const picks = QUESTIONS.map((Q, i) => Q.a[a[i]]?.[1]).filter(Boolean);
-  if (picks.length !== QUESTIONS.length) { location.replace("index.html"); throw 0; }
+  if (picks.length !== QUESTIONS.length) location.replace("index.html");
+  else {
   const max = picks[0].max, want = picks.flatMap((p) => p.want || []);
   const score = (p) => want.filter((t) => p.tags.includes(t)).length;
   const pct = (p) => (want.length ? Math.round((score(p) / want.length) * 100) : null);
@@ -81,18 +82,19 @@ if ($("#result")) {
     top.map((p, i) => card(p, i ? "" : '<p class="best">ההתאמה הכי טובה</p>', pct(p))).join("") +
     fill.map((p) => card(p, '<p class="over">מעט מעל התקציב שבחרתם</p>', pct(p))).join("") +
     (stretch && top[0] && score(stretch) > score(top[0]) ? `<h2>אם אפשר למתוח את התקציב</h2>${card(stretch, "", pct(stretch))}` : "");
+  }
 }
 
 // ---- קטלוג מלא (catalog.html)
 if ($("#catalog")) {
   const BRANDS = ["Bambu Lab", "Creality", "Elegoo", "Prusa"];
   const all = [
-    ...PRINTERS.map((p) => { const brand = BRANDS.find((b) => p.name.startsWith(b)); return { brand, name: p.name.slice(brand.length + 1), build: p.build, enclosed: p.tags.includes("enclosed"), color: p.tags.includes("color") ? "כן" : null, note: "", rec: true, prices: p.prices }; }),
+    ...PRINTERS.map((p) => { const brand = BRANDS.find((b) => p.name.startsWith(b)) || p.name.split(" ")[0]; return { brand, name: p.name.slice(brand.length + 1), build: p.build, enclosed: p.tags.includes("enclosed"), color: p.tags.includes("color") ? "כן" : null, note: "", rec: true, prices: p.prices }; }),
     ...CATALOG.map((c) => ({ ...c, prices: c.o.map(([store, label, ils, url]) => ({ store, label, ils, url })) })),
   ];
   const brands = [...new Set(all.map((m) => m.brand))].sort();
-  $("#filters").innerHTML = `<select id="f-brand"><option value="">כל היצרנים</option>${brands.map((b) => `<option>${b}</option>`).join("")}</select>
-    <select id="f-max"><option value="">כל מחיר</option>${[1500, 2500, 4000, 6000, 9000].map((n) => `<option value="${n}">עד ${fmt(n)}</option>`).join("")}</select>
+  $("#filters").innerHTML = `<select id="f-brand" aria-label="יצרן"><option value="">כל היצרנים</option>${brands.map((b) => `<option>${b}</option>`).join("")}</select>
+    <select id="f-max" aria-label="מחיר מרבי"><option value="">כל מחיר</option>${[1500, 2500, 4000, 6000, 9000].map((n) => `<option value="${n}">עד ${fmt(n)}</option>`).join("")}</select>
     <label><input type="checkbox" id="f-enc"> סגורות בלבד</label> <label><input type="checkbox" id="f-col"> עם רב-צבעי</label>`;
   const yn = (v) => (v === null ? "לא אומת" : v ? "סגורה" : "פתוחה");
   const draw = () => {
@@ -113,7 +115,7 @@ if ($("#fil")) {
   const mid = (r) => Math.round((r[0] + r[1]) / 10) * 5;
   const clean = (s) => s.replace(/ \(.*\)/, "").replace(/\s*\/\s*/g, "-");
   const brands = [...new Set(FILAMENTS.map((f) => f.brand))];
-  $("#fil-pick").innerHTML = `<select id="fb">${brands.map((b) => `<option>${b}</option>`).join("")}</select> <select id="fl" dir="ltr"></select>`;
+  $("#fil-pick").innerHTML = `<select id="fb" aria-label="יצרן הפילמנט">${brands.map((b) => `<option>${b}</option>`).join("")}</select> <select id="fl" dir="ltr" aria-label="סוג הפילמנט"></select>`;
   const lines = () => { $("#fl").innerHTML = FILAMENTS.filter((f) => f.brand === $("#fb").value).map((f) => `<option>${f.line}</option>`).join(""); show(); };
   const cur = () => FILAMENTS.find((f) => f.brand === $("#fb").value && f.line === $("#fl").value);
   function preset(f, printer) {
@@ -124,6 +126,7 @@ if ($("#fil")) {
       nozzle_temperature_range_low: [String(f.nozzle[0])], nozzle_temperature_range_high: [String(f.nozzle[1])],
       hot_plate_temp: bed, hot_plate_temp_initial_layer: bed, textured_plate_temp: bed, textured_plate_temp_initial_layer: bed };
   }
+  let lastPrinter = null;
   function show() {
     const f = cur(), r = f.ready;
     const ready = [r.bs && `<li><b>Bambu Studio:</b> פרופיל מובנה — חפשו <bdi>"${r.bs}"</bdi> ברשימת הפילמנטים (אם לא מופיע: סמנו אותו תחת ⚙ ← Filament).</li>`,
@@ -139,14 +142,15 @@ if ($("#fil")) {
         <tr><th>מדפסת סגורה</th><td>${f.enclosure ? "נדרשת" : "לא נדרשת"}</td></tr>
       </tbody></table>
       ${f.note ? `<p class="watch">${f.note}</p>` : ""}
-      <p class="meta">${f.verified ? "✔ הדפסתי עם החומר הזה בעצמי." : "נתוני יצרן — עוד לא נבדק על ידי."} ${ext(f.src, "מקור")}</p>
+      <p class="meta">${f.verified ? "✔ הדפסתי עם החומר הזה בעצמי." : "נתוני יצרן."} ${ext(f.src, "מקור")}</p>
       <h3>פרופיל מוכן</h3>${ready ? `<ul>${ready}</ul>` : "<p>לא מצאתי פרופיל רשמי או מובנה לחומר הזה.</p>"}
-      <h3>פרופיל בסיס ל-Bambu Studio <span class="over">בטא</span></h3>
+      <h3>פרופיל בסיס ל-Bambu Studio</h3>
       <p>יורש מ-Generic ${f.mat} של המדפסת ומשנה רק טמפרטורות — אמצע הטווח של היצרן (<span dir="ltr">${mid(f.nozzle)}°C / ${Math.min(mid(f.bed), 100)}°C</span>). נקודת התחלה, לא פרופיל מכויל.${ready ? " אם יש פרופיל רשמי או מובנה — עדיף אותו." : ""}</p>
-      <p><select id="fp">${Object.keys(BBL_PARENTS).map((p) => `<option${BBL_PARENTS[p][f.mat] ? "" : " disabled"}>${p}</option>`).join("")}</select>
+      <p><select id="fp" aria-label="דגם המדפסת">${Object.keys(BBL_PARENTS).map((p) => `<option${BBL_PARENTS[p][f.mat] ? "" : " disabled"}>${p}</option>`).join("")}</select>
       <button class="cta" id="dl">הורדת קובץ JSON</button></p>
-      <p class="meta">ייבוא: File ← Import ← Import Configs. נבנה מול Bambu Studio ${BBL_VERSION}.</p></article>`;
-    $("#fp").value = Object.keys(BBL_PARENTS).find((p) => BBL_PARENTS[p][f.mat]);
+      <p class="meta">ייבוא: File ← Import ← Import Configs. נבנה מול Bambu Studio ${BBL_VERSION}; הייבוא נבדק על H2S אמיתית.</p></article>`;
+    $("#fp").value = BBL_PARENTS[lastPrinter]?.[f.mat] ? lastPrinter : Object.keys(BBL_PARENTS).find((p) => BBL_PARENTS[p][f.mat]);
+    $("#fp").onchange = (e) => (lastPrinter = e.target.value);
   }
   $("#fil-pick").addEventListener("change", (e) => (e.target.id === "fb" ? lines() : show()));
   $("#fil").addEventListener("click", (e) => {
@@ -159,5 +163,8 @@ if ($("#fil")) {
 }
 
 // ---- וואטסאפ + סלייסרים
-if ($("#wa")) SITE.whatsapp ? ($("#wa").href = `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent("היי, הגעתי מהאתר ורוצה עזרה עם מדפסת תלת-ממד")}`) : $("#wa").remove();
+if ($("#wa")) {
+  if (SITE.whatsapp) $("#wa").href = `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent("היי, הגעתי מהאתר ורוצה עזרה עם מדפסת תלת-ממד")}`;
+  else { const p = $("#wa").parentElement; $("#wa").remove(); if (p.tagName === "P" && !p.textContent.trim()) p.remove(); }
+}
 if ($("#slicers")) $("#slicers").innerHTML = SLICERS.map((s) => `<li><b>${s.brand}:</b> ${ext(s.url, s.name + " — דף ההורדה הרשמי")}</li>`).join("");

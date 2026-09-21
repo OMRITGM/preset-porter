@@ -40,7 +40,7 @@ nav a[aria-current] { background: var(--ink); color: var(--bg); }
 .tabbar { display: none; }
 @media (max-width: 760px) {
   header nav a { display: none; } header nav a.keep { display: inline-block; }
-  body { padding-bottom: 84px; }
+  body { padding-bottom: 84px; } body.solo { padding-bottom: 0; }
   .tabbar { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; position: fixed; inset: auto 10px 10px; z-index: 30; background: var(--surface); border: 2px solid var(--edge); box-shadow: 5px 5px 0 var(--sh); }
   .tabbar a { display: grid; justify-items: center; gap: 2px; padding: 9px 2px 7px; color: var(--ink); text-decoration: none; font: 500 .68rem var(--display); }
   .tabbar a + a { border-inline-start: 2px solid var(--soft); }
@@ -88,7 +88,7 @@ button { font: inherit; cursor: pointer; border-radius: 0; }
 .opts button::before { content: attr(data-n); flex: none; display: grid; place-items: center; width: 30px; height: 30px; background: var(--ink); color: var(--lime); font: 700 .9rem var(--mono); }
 :root[data-theme="dark"] .opts button::before { background: var(--lime); color: var(--on-lime); }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .opts button::before { background: var(--lime); color: var(--on-lime); } }
-.opts button:hover, .opts button:focus-visible, .opts button.sel { background: var(--lime); color: var(--on-lime); transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--sh); outline: none; }
+.opts button:hover, .opts button:focus-visible, .opts button.sel { background: var(--lime); color: var(--on-lime); transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--sh); }
 .opts button:hover::before, .opts button.sel::before { background: var(--on-lime); color: var(--lime); }
 .back { background: none; border: 0; color: var(--muted); margin-top: 18px; padding: 4px 0; font: 500 .85rem var(--display); }
 .back:hover { color: var(--ink); }
