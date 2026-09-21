@@ -57,6 +57,7 @@ const PRINTERS = [
       { store: "Copytech", label: "קומבו AMS 2 Pro", ils: 3980, url: "https://www.copytech.co.il/items/8717414" },
       { store: "Bug", label: "קומבו AMS 2 Pro, הזמנה מוקדמת", ils: 3990, url: BUG + "bambulab/p2s/ams2/pro/combo" },
       { store: "3DbotX", label: "קומבו AMS 2 Pro", ils: 4290, url: BOTX + "bambu-lab-p2s-ams-2-pro-combo" },
+      { store: "Yazamco", label: "קומבו AMS 2 Pro", ils: 4557, url: "https://3dny.co.il/product/%d7%9e%d7%93%d7%a4%d7%a1%d7%aa-%d7%aa%d7%9c%d7%aa-%d7%9e%d7%99%d7%9e%d7%93-bambu-lab-p2s/" },
       { store: "ProMaker", ils: 3390, url: "https://promaker.co.il/product/bambu-lab-p2s-%D7%94%D7%93%D7%95%D7%A8-%D7%94%D7%97%D7%93%D7%A9-%D7%A9%D7%9C-%D7%A1%D7%93%D7%A8%D7%AA-p-%D7%9E%D7%91%D7%A0%D7%94-%D7%A1%D7%92%D7%95%D7%A8-%D7%90%D7%A7%D7%A1%D7%98%D7%A8%D7%95%D7%93/" },
       { store: "ProMaker", label: "קומבו AMS 2 Pro", ils: 3990, url: "https://promaker.co.il/product/%D7%9E%D7%93%D7%A4%D7%A1%D7%AA-%D7%AA%D7%9C%D7%AA-%D7%9E%D7%99%D7%9E%D7%93-bambu-lab-p2s-ams-2-pro-combo-%D7%91%D7%A2%D7%9C%D7%AA-%D7%90%D7%A7%D7%A1%D7%98%D7%A8%D7%95%D7%93%D7%A8-servo-%D7%95%D7%9E/" },
       { store: "Spider3D", label: "קומבו AMS 2 Pro, הזמנה מוקדמת", ils: 5190, url: "https://www.spider3d.co.il/bambu-lab-p2s/" }] },
