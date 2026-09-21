@@ -30,7 +30,7 @@ function card(p, extra = "", pct = null) {
     <p class="meta"><span dir="ltr">${p.build}</span> מ"מ · ${m ? "מ-" + fmt(m) : "מחיר: בדקו בחנות"}</p>
     <p class="tags">${[...new Set(p.tags)].map((t) => TAG_LINK[t] ? `<a href="basics.html#${TAG_LINK[t]}" title="מה זה?"><span>${TAG_HE[t]} ⓘ</span></a>` : `<span>${TAG_HE[t]}</span>`).join("")}</p>
     <p>${p.why}</p><p class="watch"><b>שימו לב:</b> ${p.watch}</p>
-    <p><a href="index.html#prices">מחירים בארץ ←</a></p></article>`;
+    <p><a href="index.html#p-${p.id}">מחירים בארץ ←</a></p></article>`;
 }
 
 // ---- שאלון (index.html)
@@ -56,10 +56,14 @@ if ($("#quiz")) {
 
 // ---- טבלת המומלצות (index.html)
 if ($("#price-table")) {
-  $("#price-table").innerHTML = `<table><thead><tr><th>דגם</th><th>מחירים בארץ</th></tr></thead><tbody>${PRINTERS.map((p) => `<tr>
+  // הגיעו מכרטיס (#p-<id>) — הדגם הזה ראשון ומודגש, השאר אחריו
+  const pick = location.hash.slice(3);
+  const rows = [...PRINTERS].sort((a, b) => (b.id === pick) - (a.id === pick));
+  $("#price-table").innerHTML = `<table><thead><tr><th>דגם</th><th>מחירים בארץ</th></tr></thead><tbody>${rows.map((p) => `<tr id="p-${p.id}"${p.id === pick ? ' class="picked"' : ""}>
     <td><b><bdi>${p.name}</bdi></b><br><small><span dir="ltr">${p.build}</span> מ"מ</small></td>
     <td>${p.prices.length ? offers(p.prices) : "אין כרגע במלאי בחנויות שבדקתי"}${p.zap ? `<br>${ext(p.zap, "השוואה ב-Zap")}` : ""}</td></tr>`).join("")}</tbody></table>
     <p class="meta">מחירים כפי שפורסמו באתרי החנויות ב-${SITE.pricesChecked}. בלי קישורי שותפים. מחיר ומלאי משתנים — תמיד לוודא בחנות.</p>`;
+  if (document.getElementById("p-" + pick)) addEventListener("load", () => $("#prices").scrollIntoView({ behavior: "instant" }));
 }
 
 // ---- תוצאות (result.html)
