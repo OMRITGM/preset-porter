@@ -1,5 +1,6 @@
 const $ = (s) => document.querySelector(s);
 const TAG_HE = { enclosed: "סגורה", open: "פתוחה", color: "רב-צבעי", big: "משטח גדול", eng: "חומרים הנדסיים", easy: "עובדת מהקופסה", tinker: "פתוחה לשינויים", quiet: "שקטה", nowaste: "רב-צבעי בלי בזבוז" };
+const TAG_LINK = { enclosed: "enclosed", open: "enclosed", color: "color", nowaste: "color", eng: "materials" };
 const fmt = (n) => "₪" + n.toLocaleString("he-IL");
 const minPrice = (p) => (p.prices.length ? Math.min(...p.prices.map((x) => x.ils)) : null);
 const ext = (url, text) => `<a href="${url}" target="_blank" rel="noopener">${text}</a>`;
@@ -11,8 +12,8 @@ if (store.get("theme")) document.documentElement.dataset.theme = store.get("them
 
 // ---- ניווט: כותרת בדסקטופ, סרגל תחתון במובייל
 const PAGES = [["index.html", "שאלון", "M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z"], ["catalog.html", "מדפסות", "M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"],
-  ["filaments.html", "פילמנטים", "M12 3a9 9 0 100 18 9 9 0 000-18zM12 9a3 3 0 100 6 3 3 0 000-6zM21 12h-6"], ["guide.html", "שבוע ראשון", "M9 6h11M9 12h11M9 18h11M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"],
-  ["porter-he.html", "Porter", "M4 8h13l-3-3M20 16H7l3 3"]];
+  ["filaments.html", "פילמנטים", "M12 3a9 9 0 100 18 9 9 0 000-18zM12 9a3 3 0 100 6 3 3 0 000-6zM21 12h-6"], ["guide.html", "מדריך", "M9 6h11M9 12h11M9 18h11M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"],
+  ["basics.html", "מושגים", "M12 3a9 9 0 100 18 9 9 0 000-18zM12 8v.5M12 11v6"], ["stores.html", "חנויות", "M4 9l1.5-5h13L20 9M4 9h16v11H4zM9 20v-6h6v6"], ["porter-he.html", "Porter", "M4 8h13l-3-3M20 16H7l3 3"]];
 const here = location.pathname.split("/").pop().replace(".html", "") || "index";
 const cur = (h) => (h.replace(".html", "") === (here === "result" ? "index" : here) ? ' aria-current="page"' : "");
 $("nav").innerHTML = PAGES.map(([h, t]) => `<a href="${h}"${cur(h)}>${t}</a>`).join("") + `<button id="theme" aria-label="מצב כהה / בהיר">◐</button>`;
@@ -27,7 +28,7 @@ function card(p, extra = "", pct = null) {
   return `<article class="card${extra.includes("best") ? " top" : ""}">${extra}
     <h3><bdi>${p.name}</bdi></h3>${pct === null ? "" : `<p class="match" style="--p:${pct}"><i></i><span>התאמה <b>${pct}%</b></span></p>`}
     <p class="meta"><span dir="ltr">${p.build}</span> מ"מ · ${m ? "מ-" + fmt(m) : "מחיר: בדקו בחנות"}</p>
-    <p class="tags">${[...new Set(p.tags)].map((t) => `<span>${TAG_HE[t]}</span>`).join("")}</p>
+    <p class="tags">${[...new Set(p.tags)].map((t) => TAG_LINK[t] ? `<a href="basics.html#${TAG_LINK[t]}" title="מה זה?"><span>${TAG_HE[t]} ⓘ</span></a>` : `<span>${TAG_HE[t]}</span>`).join("")}</p>
     <p>${p.why}</p><p class="watch"><b>שימו לב:</b> ${p.watch}</p>
     <p><a href="index.html#prices">מחירים בארץ ←</a></p></article>`;
 }
@@ -107,12 +108,13 @@ if ($("#fil")) {
   const lines = () => { $("#fl").innerHTML = FILAMENTS.filter((f) => f.brand === $("#fb").value).map((f) => `<option>${f.line}</option>`).join(""); show(); };
   const cur = () => FILAMENTS.find((f) => f.brand === $("#fb").value && f.line === $("#fl").value);
   function preset(f, printer) {
-    const [parent, n] = BBL_PARENTS[printer][f.mat], nozzle = String(mid(f.nozzle)), bed = [String(Math.min(mid(f.bed), 100))];
+    const [parent, n] = BBL_PARENTS[printer][f.mat], nozzle = String(mid(f.nozzle));
     const name = `${f.brand} ${clean(f.line)} @${clean(printer)} HR`, rep = Array(n).fill(nozzle);
-    return { filament_settings_id: [name], filament_vendor: [f.brand], from: "User", inherits: parent, name, version: BBL_VERSION,
+    const p = { filament_settings_id: [name], filament_vendor: [f.brand], from: "User", inherits: parent, name, version: BBL_VERSION,
       nozzle_temperature: rep, nozzle_temperature_initial_layer: rep,
-      nozzle_temperature_range_low: [String(f.nozzle[0])], nozzle_temperature_range_high: [String(f.nozzle[1])],
-      hot_plate_temp: bed, hot_plate_temp_initial_layer: bed, textured_plate_temp: bed, textured_plate_temp_initial_layer: bed };
+      nozzle_temperature_range_low: [String(f.nozzle[0])], nozzle_temperature_range_high: [String(f.nozzle[1])] };
+    if (f.bed) { const bed = [String(Math.min(mid(f.bed), 100))]; Object.assign(p, { hot_plate_temp: bed, hot_plate_temp_initial_layer: bed, textured_plate_temp: bed, textured_plate_temp_initial_layer: bed }); }
+    return p; // no published bed temp -> keep the Generic parent's plate temps
   }
   let lastPrinter = null;
   function show() {
@@ -123,17 +125,17 @@ if ($("#fil")) {
     $("#fil").innerHTML = `<article class="card"><h3><bdi>${f.brand} ${f.line}</bdi></h3>
       <table class="kv"><tbody>
         <tr><th>דיזה</th><td><span dir="ltr">${f.nozzle[0]}–${f.nozzle[1]}°C</span></td></tr>
-        <tr><th>משטח</th><td><span dir="ltr">${f.bed[0]}–${f.bed[1]}°C</span></td></tr>
-        <tr><th>מהירות מקס' לפי היצרן</th><td>${f.speed} מ"מ/ש</td></tr>
-        <tr><th>מאוורר</th><td>${f.fan ?? "היצרן לא מפרסם"}</td></tr>
-        <tr><th>ייבוש</th><td>${f.dry ?? "היצרן לא מפרסם"}</td></tr>
+        <tr><th>משטח</th><td>${f.bed ? `<span dir="ltr">${f.bed[0]}–${f.bed[1]}°C</span>` : "לא מפורסם"}</td></tr>
+        <tr><th>מהירות מקס' לפי היצרן</th><td>${f.speed ? `${f.speed} מ"מ/ש` : "לא מפורסם"}</td></tr>
+        <tr><th>מאוורר</th><td>${f.fan ?? "לא מפורסם"}</td></tr>
+        <tr><th>ייבוש</th><td>${f.dry ?? "לא מפורסם"}</td></tr>
         <tr><th>מדפסת סגורה</th><td>${f.enclosure ? "נדרשת" : "לא נדרשת"}</td></tr>
       </tbody></table>
       ${f.note ? `<p class="watch">${f.note}</p>` : ""}
-      <p class="meta">${f.verified ? "✔ הדפסתי עם החומר הזה בעצמי." : "נתוני יצרן."} ${ext(f.src, "מקור")}</p>
+      <p class="meta">${f.verified ? "✔ הדפסתי עם החומר הזה בעצמי." : f.seller ? `נתונים כפי שפורסמו אצל ${f.seller}.` : "נתוני יצרן."} ${ext(f.src, "מקור")}</p>
       <h3>פרופיל מוכן</h3>${ready ? `<ul>${ready}</ul>` : "<p>לא מצאתי פרופיל רשמי או מובנה לחומר הזה.</p>"}
       <h3>פרופיל בסיס ל-Bambu Studio</h3>
-      <p>יורש מ-Generic ${f.mat} של המדפסת ומשנה רק טמפרטורות — אמצע הטווח של היצרן (<span dir="ltr">${mid(f.nozzle)}°C / ${Math.min(mid(f.bed), 100)}°C</span>). נקודת התחלה, לא פרופיל מכויל.${ready ? " אם יש פרופיל רשמי או מובנה — עדיף אותו." : ""}</p>
+      <p>יורש מ-Generic ${f.mat} של המדפסת ומשנה רק טמפרטורות — אמצע הטווח של היצרן (<span dir="ltr">${mid(f.nozzle)}°C${f.bed ? ` / ${Math.min(mid(f.bed), 100)}°C` : ""}</span>${f.bed ? "" : "; טמפ' המשטח נשארת של Generic"}). נקודת התחלה, לא פרופיל מכויל.${ready ? " אם יש פרופיל רשמי או מובנה — עדיף אותו." : ""}</p>
       <p><select id="fp" aria-label="דגם המדפסת">${Object.keys(BBL_PARENTS).map((p) => `<option${BBL_PARENTS[p][f.mat] ? "" : " disabled"}>${p}</option>`).join("")}</select>
       <button class="cta" id="dl">הורדת קובץ JSON</button></p>
       <p class="meta">ייבוא: File ← Import ← Import Configs. נבנה מול Bambu Studio ${BBL_VERSION}; הייבוא נבדק על H2S אמיתית.</p></article>`;
@@ -149,6 +151,13 @@ if ($("#fil")) {
   });
   lines();
 }
+
+// ---- חנויות מומלצות (stores.html)
+if ($("#stores")) $("#stores").innerHTML = STORES.map((s) => `<article class="card">
+  <h3><bdi>${s.name}</bdi></h3><p class="meta">${s.where}</p>
+  <p class="tags">${s.tags.map((t) => `<span>${t}</span>`).join("")}</p>
+  <p>${s.why}</p>${s.watch ? `<p class="watch"><b>שימו לב:</b> ${s.watch}</p>` : ""}
+  <p>${ext(s.url, "לאתר החנות ←")}</p></article>`).join("");
 
 // ---- וואטסאפ + סלייסרים
 if ($("#wa")) {

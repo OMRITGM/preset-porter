@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>מושגי יסוד בהדפסת תלת-ממד — מדפסת סגורה, AMS, פילמנט, סלייסר — הדפסה ראשונה</title>
+  <meta name="description" content="הסבר בעברית עם איורים למתחילים: מה זה מדפסת סגורה, AMS ורב-צבעי, מחליף ראשים, סלייסר, פרופיל פילמנט, ומה ההבדל בין PLA, PETG, ABS, ASA ו-TPU.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;900&family=Heebo:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header><a class="logo" href="index.html">הדפסה <span>ראשונה</span></a><nav></nav></header>
+  <main>
+    <h1>מושגי <em>יסוד</em></h1>
+    <p class="lead">כל המילים שמופיעות בהמלצות — בלי ז'רגון, עם ציור. אם משהו עדיין לא ברור, זה באג באתר: <a href="https://github.com/OMRITGM/preset-porter/issues">ספרו לי</a>.</p>
+    <ul class="chips toc">
+      <li><a href="#how">איך זה עובד</a></li><li><a href="#enclosed">סגורה / פתוחה</a></li><li><a href="#bed">משטח נע / CoreXY</a></li>
+      <li><a href="#color">רב-צבעי</a></li><li><a href="#slicer">סלייסר ופרופיל</a></li><li><a href="#materials">סוגי פילמנט</a></li>
+    </ul>
+
+    <h2 id="how">איך מדפסת תלת-ממד עובדת</h2>
+    <figure class="fig">
+      <svg viewBox="0 0 320 170" role="img" aria-label="גליל פילמנט נמשך לראש מחומם שמניח שכבות על המשטח">
+        <circle cx="46" cy="46" r="30" class="s"/><circle cx="46" cy="46" r="9" class="s"/>
+        <path d="M76 46 C 130 46, 150 30, 190 30" class="s thin"/>
+        <rect x="178" y="22" width="44" height="34" class="s f"/><path d="M192 56 l8 14 l8 -14" class="s f"/>
+        <rect x="150" y="128" width="130" height="10" class="s ink"/>
+        <rect x="186" y="116" width="62" height="10" class="acc"/><rect x="190" y="104" width="54" height="10" class="acc"/><rect x="196" y="92" width="42" height="10" class="acc"/><rect x="202" y="80" width="30" height="10" class="acc"/>
+        <text x="46" y="98" class="t">פילמנט</text><text x="262" y="40" class="t">ראש חם</text><text x="215" y="158" class="t">משטח</text>
+      </svg>
+      <figcaption>חוט פלסטיק (<b>פילמנט</b>) נמשך מהגליל לתוך <b>ראש חם</b> שמתיך אותו ומוציא אותו דרך <b>דיזה</b> דקה. הראש מצייר שכבה אחת על ה<b>משטח</b>, עולה בחצי מילימטר, ומצייר את הבאה — עד שהחפץ שלם.</figcaption>
+    </figure>
+
+    <h2 id="enclosed">מדפסת סגורה מול פתוחה</h2>
+    <div class="pair">
+      <figure class="fig">
+        <svg viewBox="0 0 160 150" role="img" aria-label="מדפסת פתוחה: שלד בלי קירות">
+          <path d="M20 135 V25 H140 V135" class="s"/><path d="M20 60 H140" class="s thin"/><rect x="70" y="52" width="20" height="16" class="s f"/>
+          <rect x="40" y="118" width="80" height="8" class="s ink"/><rect x="66" y="100" width="28" height="18" class="acc"/>
+        </svg>
+        <figcaption><b>פתוחה:</b> זולה יותר ורואים הכול. מצוינת ל-PLA ו-PETG. רגישה לרוח ממזגן, ולא מתאימה ל-ABS/ASA.</figcaption>
+      </figure>
+      <figure class="fig">
+        <svg viewBox="0 0 160 150" role="img" aria-label="מדפסת סגורה: קופסה עם דלת שקופה">
+          <rect x="20" y="20" width="120" height="118" class="s f"/><rect x="34" y="34" width="92" height="90" class="s glass"/>
+          <rect x="70" y="52" width="20" height="16" class="s f"/><rect x="44" y="110" width="72" height="8" class="s ink"/><rect x="66" y="92" width="28" height="18" class="acc"/>
+        </svg>
+        <figcaption><b>סגורה:</b> קופסה עם דלת. שומרת חום בפנים — חובה לחומרים "הנדסיים" (ABS, ASA, ניילון) לחלקים חזקים ועמידים לשמש. גם שקטה יותר, מסננת ריחות, ובטוחה יותר ליד ילדים.</figcaption>
+      </figure>
+    </div>
+
+    <h2 id="bed">משטח נע מול CoreXY</h2>
+    <p><b>משטח נע</b> (bed slinger, כמו A1): המשטח עצמו זז קדימה-אחורה. פשוט וזול, אבל צריך מקום פנוי מאחורי המדפסת ושולחן יציב. <b>CoreXY</b> (כמו P2S, X2D): המשטח זז רק למטה, והראש זז לכל הכיוונים — מהיר יותר, יציב יותר, ובדרך כלל בגוף סגור.</p>
+
+    <h2 id="color">רב-צבעי: AMS מול מחליף ראשים</h2>
+    <div class="pair">
+      <figure class="fig">
+        <svg viewBox="0 0 170 160" role="img" aria-label="AMS: ארבעה גלילים שמזינים ראש אחד">
+          <rect x="10" y="10" width="150" height="42" class="s f"/>
+          <circle cx="32" cy="31" r="13" class="s acc"/><circle cx="67" cy="31" r="13" class="s"/><circle cx="102" cy="31" r="13" class="s ink"/><circle cx="137" cy="31" r="13" class="s"/>
+          <path d="M85 52 V96" class="s thin"/><rect x="72" y="96" width="26" height="20" class="s f"/>
+          <path d="M120 130 h26 v20 h-26 z" class="s acc2"/><text x="133" y="126" class="t">פסולת</text>
+        </svg>
+        <figcaption><b>AMS / CFS</b> — קופסה עם 4 גלילים שמזינה <b>ראש אחד</b>. בכל החלפת צבע המדפסת "שוטפת" את הצבע הקודם החוצה, ולכן יש פסולת פלסטיק. זול יחסית ונפוץ.</figcaption>
+      </figure>
+      <figure class="fig">
+        <svg viewBox="0 0 170 160" role="img" aria-label="מחליף ראשים: ארבעה ראשים נפרדים">
+          <rect x="14" y="16" width="26" height="22" class="s acc"/><rect x="52" y="16" width="26" height="22" class="s f"/><rect x="90" y="16" width="26" height="22" class="s ink"/><rect x="128" y="16" width="26" height="22" class="s f"/>
+          <path d="M65 38 V92" class="s thin"/><rect x="52" y="92" width="26" height="22" class="s f"/>
+          <rect x="30" y="140" width="110" height="8" class="s ink"/>
+        </svg>
+        <figcaption><b>מחליף ראשים</b> (כמו Snapmaker U1, Prusa XL) — <b>ראש נפרד לכל צבע</b>. המדפסת מחליפה ראשים במקום לשטוף, אז כמעט אין פסולת וההדפסה מהירה יותר. יקר יותר.</figcaption>
+      </figure>
+    </div>
+
+    <h2 id="slicer">סלייסר ופרופיל</h2>
+    <p>המדפסת לא מבינה קובץ תלת-ממד. <b>סלייסר</b> (Bambu Studio, OrcaSlicer, PrusaSlicer) "פורס" את המודל לשכבות והופך אותו לפקודות תנועה. כדי לעשות את זה הוא צריך לדעת עם מה אתם מדפיסים — וזה ה<b>פרופיל</b>: קובץ הגדרות קטן שאומר לו טמפרטורה, מהירות וקירור לחומר מסוים על מדפסת מסוימת. לכל פילמנט יש פרופיל, ו<a href="filaments.html">בדף הפילמנטים</a> יש איפה למצוא אותם.</p>
+
+    <h2 id="materials">סוגי פילמנט — מה לבחור</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>חומר</th><th>למה הוא טוב</th><th>קושי</th><th>מדפסת סגורה?</th></tr></thead>
+      <tbody>
+        <tr><td><b>PLA</b></td><td>הכול בבית: קישוטים, צעצועים, מעמדים, דגמים. זול, בלי ריח. מתרכך בחום — לא לרכב בקיץ.</td><td>קל מאוד</td><td>לא צריך</td></tr>
+        <tr><td><b>PLA+ / PLA Pro</b></td><td>PLA קצת פחות שביר. ברירת מחדל טובה למתחילים.</td><td>קל מאוד</td><td>לא צריך</td></tr>
+        <tr><td><b>PETG</b></td><td>חזק וגמיש יותר, עומד בחום של שמש ישראלית ובמים. כלים, מתקנים, חלקים לבית.</td><td>קל–בינוני (נמתח לחוטים)</td><td>לא צריך</td></tr>
+        <tr><td><b>ABS / ASA</b></td><td>חלקים לרכב ולחוץ: עמיד בחום גבוה, ASA גם בשמש. עם ריח — רק בחדר מאוורר.</td><td>בינוני–קשה</td><td><b>כן</b></td></tr>
+        <tr><td><b>TPU</b></td><td>גמיש כמו גומי: כיסויים לטלפון, אטמים, רגליות.</td><td>בינוני (הדפסה איטית)</td><td>לא צריך</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note"><b>כלל אצבע:</b> מתחילים ב-PLA בחודש הראשון, עוברים ל-PETG כשצריך משהו חזק, ורק אחר כך ABS/ASA. ובארץ — כל גליל פתוח סופג לחות; מאחסנים בקופסה אטומה עם סיליקה.</p>
+  </main>
+  <footer><p>האתר עצמאי ולא קשור לאף יבואן. האיורים סכמטיים.</p></footer>
+  <script src="data.js"></script><script src="app.js"></script>
+</body>
+</html>

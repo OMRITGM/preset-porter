@@ -154,3 +154,16 @@ code { font: 500 .85em var(--mono); background: var(--bg); border: 2px solid var
 
 footer { color: var(--muted); font-size: .9rem; padding-block: 32px; border-top: 2px solid var(--edge); margin-top: 72px; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } html { scroll-behavior: auto; } }
+
+/* מושגי יסוד — איורים סכמטיים */
+.fig { margin: 18px 0; padding: 18px; background: var(--surface); border: 2px solid var(--edge); box-shadow: 6px 6px 0 var(--sh); }
+.fig svg { display: block; width: 100%; max-width: 360px; height: auto; margin: 0 auto 12px; }
+.fig figcaption { color: var(--muted); } .fig figcaption b { color: var(--ink); }
+.fig .s { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linejoin: round; } .fig .thin { stroke-width: 2; stroke-dasharray: 5 4; }
+.fig .f { fill: var(--bg); } .fig .ink { fill: var(--ink); } .fig .acc { fill: var(--lime); stroke: var(--edge); stroke-width: 2; }
+.fig .acc2 { fill: color-mix(in srgb, var(--lime) 45%, var(--bg)); } .fig .glass { fill: color-mix(in srgb, var(--lime) 12%, transparent); }
+.fig .t { fill: var(--muted); font: 500 13px Heebo, sans-serif; text-anchor: middle; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; } .pair .fig { margin: 0; }
+@media (max-width: 640px) { .pair { grid-template-columns: 1fr; } }
+.toc { margin: 8px 0 0; } .toc a { text-decoration: none; font-weight: 700; } .toc a:hover { background: none; text-decoration: underline; }
+.tags a { text-decoration: none; color: inherit; } .tags a:hover { background: none; } .tags a span { cursor: help; }
