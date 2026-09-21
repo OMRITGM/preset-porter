@@ -1,0 +1,16 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "hadpasa-rishona",
+  "main": "worker.js",
+  "compatibility_date": "2026-09-18",
+  "observability": {
+    "enabled": true
+  },
+  "routes": [{ "pattern": "3d.omrielcharizi.com", "custom_domain": true }],
+  "kv_namespaces": [{ "binding": "STATS", "id": "c760aca11ae84c9bae4d51ab2180dd7e" }],
+  "assets": {
+    "directory": ".",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  }
+}

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Preset Porter — fix "Unsupported" filament presets after switching Bambu Lab printers</title>
+  <meta name="description" content="Moved from a P1S/X1C/A1 to an H2S, H2D, P2S or X2D and your calibrated filament presets show up as Unsupported? Drop the JSON, pick the new printer, get a preset that works. Free, runs in your browser.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    #drop { border: 2px dashed var(--line); border-radius: 14px; padding: 36px 20px; text-align: center; background: var(--surface); cursor: pointer; }
+    #drop.on { border-color: var(--accent); }
+    code { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; font-size: .9em; }
+    .res li { margin-bottom: 6px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header><a class="logo" href="porter.html">Preset <span>Porter</span></a><nav><a href="index.html" lang="he">עברית</a></nav></header>
+  <main>
+    <h1>Your filament presets, on your new printer</h1>
+    <p class="lead">Switched Bambu Lab printers and your calibrated presets landed under <b>Unsupported presets</b>? Drop them here, pick the new printer, import the result.</p>
+
+    <div class="filters"><label for="model">Target printer</label> <select id="model"></select></div>
+    <div id="drop" tabindex="0">Drop filament preset <code>.json</code> files here, or click to choose<br><small>Files are processed in your browser and never uploaded.</small></div>
+    <input type="file" id="pick" accept=".json" multiple hidden>
+    <section id="out"></section>
+
+    <h2>Where are my preset files?</h2>
+    <ol class="check">
+      <li>Windows: <code>%APPDATA%\BambuStudio\user\&lt;id&gt;\filament</code> · macOS: <code>~/Library/Application Support/BambuStudio/user/&lt;id&gt;/filament</code></li>
+      <li>Take the <code>.json</code> files (ignore <code>.info</code>). Presets shared by filament makers work too.</li>
+      <li>Import the result with <b>File → Import → Import Configs</b> while the new printer is selected. It appears under <b>User presets → Custom</b>.</li>
+    </ol>
+
+    <h2>What it actually changes</h2>
+    <ol class="check">
+      <li><b>The parent.</b> A user preset only stores your changes and <code>inherits</code> the rest from a system preset that belongs to one printer family (<code>Generic PLA @BBL P1P</code>). On another printer that parent does not apply, so the preset is hidden. Porter swaps it for the same material's preset on the target printer.</li>
+      <li><b>Per-nozzle values.</b> Newer printers keep one value per nozzle type (Standard / High Flow / E3D High Flow, plus Bowden on the X2D). Your values are mapped by nozzle type; types your old printer never had inherit the system default.</li>
+      <li>Nothing else. Your flow ratio, temperatures and speeds stay exactly as you calibrated them — re-run flow calibration if the hotend is very different.</li>
+    </ol>
+    <p class="note">Built against Bambu Studio <span id="ver"></span> system profiles. Tested on a real H2S: presets made for P1S, X1C and A1 that were stuck under Unsupported showed up under Custom after porting. Not affiliated with Bambu Lab. Found a preset it gets wrong? <a href="https://github.com/OmriTGM">Tell me</a>.</p>
+  </main>
+  <footer><p>Made by Omri Elcharizi · part of <a href="index.html" lang="he">הדפסה ראשונה</a></p></footer>
+  <script src="bbl-map.js"></script><script src="porter-core.js"></script>
+  <script>
+    const $ = (s) => document.querySelector(s), esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    const order = ["H2S", "H2D", "H2D Pro", "H2C", "P2S", "X2D", "A2L", "A1", "A1 mini", "P1S", "P1P", "X1 Carbon", "X1", "X1E"];
+    $("#model").innerHTML = Object.keys(BBL_MAP.printers).sort((a, b) => order.indexOf(a.slice(10)) - order.indexOf(b.slice(10))).map((m) => `<option value="${m}">${m.slice(10)}</option>`).join("");
+    $("#ver").textContent = BBL_MAP.version.replace(/\b0(\d)/g, "$1");
+    let last = [];
+    async function run(files) {
+      last = files.length ? [...files] : last;
+      const rows = await Promise.all(last.map(async (f) => {
+        try { const r = portPreset(JSON.parse(await f.text()), $("#model").value); return { f, r }; } catch (e) { return { f, err: e.message }; }
+      }));
+      $("#out").innerHTML = rows.map(({ f, r, err }, i) => `<article class="card"><h3>${esc(r ? r.preset.name : f.name)}</h3>${err ? `<p class="watch"><b>Could not port:</b> ${esc(err)}</p>` :
+        `<p class="meta">${esc(r.parent || "no parent")} → ${esc(r.newParent || "printer list retargeted")}</p>${r.notes.length ? `<ul class="res">${r.notes.map((n) => `<li>${esc(n)}</li>`).join("")}</ul>` : ""}
+         <button class="cta" data-i="${i}">Download</button>`}</article>`).join("") + (rows.filter((x) => x.r).length > 1 ? '<p><button class="cta" data-i="all">Download all</button></p>' : "");
+      $("#out").onclick = (e) => {
+        const i = e.target.dataset.i; if (i === undefined) return;
+        let ref = ""; try { ref = new URL(document.referrer).hostname; } catch {}
+        const n = i === "all" ? rows.filter((x) => x.r).length : 1; // anonymous count: printer + referrer host only
+        for (let k = 0; k < n; k++) fetch("/api/hit", { method: "POST", body: JSON.stringify({ model: $("#model").value.slice(10), ref }), keepalive: true }).catch(() => {});
+        (i === "all" ? rows.filter((x) => x.r) : [rows[i]]).forEach(({ r }, n) => setTimeout(() => {
+          const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(r.preset, null, 4)], { type: "application/json" }));
+          a.download = r.preset.name.replace(/[\\/:*?"<>|]/g, "-") + ".json"; a.click(); URL.revokeObjectURL(a.href);
+        }, n * 250));
+      };
+    }
+    const drop = $("#drop");
+    drop.onclick = () => $("#pick").click(); drop.onkeydown = (e) => e.key === "Enter" && $("#pick").click();
+    $("#pick").onchange = (e) => run(e.target.files); $("#model").onchange = () => run([]);
+    ["dragover", "dragleave", "drop"].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.toggle("on", t === "dragover"); if (t === "drop") run(e.dataTransfer.files); }));
+  </script>
+</body>
+</html>
