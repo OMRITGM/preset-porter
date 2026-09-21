@@ -1,0 +1,22 @@
+{
+  "name": "@omritgm/preset-porter",
+  "version": "1.0.0",
+  "description": "Port Bambu Studio filament presets between printers - fixes presets stuck under \"Unsupported\" after moving to an H2S, H2D, H2C, P2S or X2D.",
+  "keywords": ["bambu-lab", "bambu-studio", "3d-printing", "filament", "preset", "orcaslicer"],
+  "homepage": "https://3d.omrielcharizi.com/porter",
+  "bugs": "https://github.com/OMRITGM/preset-porter/issues",
+  "repository": { "type": "git", "url": "git+https://github.com/OMRITGM/preset-porter.git" },
+  "license": "MIT",
+  "author": "Omri Elcharizi (https://omrielcharizi.com)",
+  "main": "index.js",
+  "bin": { "preset-porter": "bin/cli.js" },
+  "files": ["index.js", "porter-core.js", "bbl-map.js", "bin/"],
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "test": "node --test",
+    "build:map": "python tools/build-bbl-map.py",
+    "check:links": "node check-links.mjs",
+    "deploy": "wrangler deploy"
+  },
+  "publishConfig": { "registry": "https://npm.pkg.github.com" }
+}
