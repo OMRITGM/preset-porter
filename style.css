@@ -1,15 +1,15 @@
-/* הדפסה ראשונה — "משטח הדפסה": דיו שחור על נייר, ליים חומצי של תצוגת slicer, קווים קשים, צללים בלי ריכוך. */
+/* הדפסה ראשונה — "משטח הדפסה": דיו כהה על נייר חם, ירוק מרווה, קווים קשים. ניגודיות נוחה לעין בשני המצבים. */
 :root {
-  --bg: #f1eee4; --surface: #fffdf5; --ink: #0b0c09; --muted: #55584c; --edge: #0b0c09; --soft: #d9d5c6; --grid: rgba(11,12,9,.06);
-  --lime: #b9f20a; --on-lime: #0b0c09; --link: #0b0c09; --sh: #0b0c09; color-scheme: light;
+  --bg: #f3f0e7; --surface: #fbf9f3; --ink: #252820; --muted: #64685c; --edge: #2f3329; --soft: #ddd9cb; --grid: rgba(37,40,32,.04);
+  --lime: #a9d18e; --on-lime: #1c2117; --link: #252820; --sh: #3b4033; color-scheme: light;
   --display: Rubik, Heebo, system-ui, sans-serif; --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #0a0b08; --surface: #12140f; --ink: #f1eee4; --muted: #a2a695; --edge: #3a3f30; --soft: #262a1f; --grid: rgba(241,238,228,.045);
-  --lime: #c8ff2e; --link: #c8ff2e; --sh: #000; color-scheme: dark; } }
+  --bg: #151813; --surface: #1c201a; --ink: #e5e2d7; --muted: #a1a595; --edge: #414739; --soft: #2b3027; --grid: rgba(229,226,215,.035);
+  --lime: #a9d18e; --link: #bfe0a8; --sh: #0c0e0a; color-scheme: dark; } }
 :root[data-theme="dark"] {
-  --bg: #0a0b08; --surface: #12140f; --ink: #f1eee4; --muted: #a2a695; --edge: #3a3f30; --soft: #262a1f; --grid: rgba(241,238,228,.045);
-  --lime: #c8ff2e; --link: #c8ff2e; --sh: #000; color-scheme: dark; }
+  --bg: #151813; --surface: #1c201a; --ink: #e5e2d7; --muted: #a1a595; --edge: #414739; --soft: #2b3027; --grid: rgba(229,226,215,.035);
+  --lime: #a9d18e; --link: #bfe0a8; --sh: #0c0e0a; color-scheme: dark; }
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 90px; }
