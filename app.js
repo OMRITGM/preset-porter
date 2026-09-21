@@ -1,5 +1,5 @@
 const $ = (s) => document.querySelector(s);
-const TAG_HE = { enclosed: "סגורה", open: "פתוחה", color: "רב-צבעי", big: "משטח גדול", eng: "חומרים הנדסיים", easy: "עובדת מהקופסה", tinker: "פתוחה לשינויים", quiet: "שקטה" };
+const TAG_HE = { enclosed: "סגורה", open: "פתוחה", color: "רב-צבעי", big: "משטח גדול", eng: "חומרים הנדסיים", easy: "עובדת מהקופסה", tinker: "פתוחה לשינויים", quiet: "שקטה", nowaste: "רב-צבעי בלי בזבוז" };
 const fmt = (n) => "₪" + n.toLocaleString("he-IL");
 const minPrice = (p) => (p.prices.length ? Math.min(...p.prices.map((x) => x.ils)) : null);
 const ext = (url, text) => `<a href="${url}" target="_blank" rel="noopener">${text}</a>`;
@@ -75,7 +75,7 @@ if ($("#result")) {
 
 // ---- קטלוג מלא (catalog.html)
 if ($("#catalog")) {
-  const BRANDS = ["Bambu Lab", "Creality", "Elegoo", "Prusa"];
+  const BRANDS = ["Bambu Lab", "Creality", "Elegoo", "Prusa", "Snapmaker"];
   const all = [
     ...PRINTERS.map((p) => { const brand = BRANDS.find((b) => p.name.startsWith(b)) || p.name.split(" ")[0]; return { brand, name: p.name.slice(brand.length + 1), build: p.build, enclosed: p.tags.includes("enclosed"), color: p.tags.includes("color") ? "כן" : null, note: "", rec: true, prices: p.prices }; }),
     ...CATALOG.map((c) => ({ ...c, prices: c.o.map(([store, label, ils, url]) => ({ store, label, ils, url })) })),

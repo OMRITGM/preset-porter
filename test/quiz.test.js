@@ -72,3 +72,9 @@ test("invalid answers are rejected", () => {
   for (const bad of [[], ["0"], ["9", "0", "0", "0", "0"], ["0", "0", "0", "0"], ["x", "y", "z", "w", "v"], ["-1", "0", "0", "0", "0"]])
     assert.equal(recommend(PRINTERS, QUESTIONS, bad), null, JSON.stringify(bad));
 });
+
+test("multi-color must: a waste-free toolchanger in budget is ranked ahead of AMS machines when it fits the rest equally", () => {
+  const a = ["2", "0", "0", "1", "0"]; // ₪2,500-5,000 / toys / color must / workroom / just works
+  const R = recommend(PRINTERS, QUESTIONS, a);
+  assert.ok(R.top.some((p) => p.id === "u1"), `U1 missing for ${label(a.map(Number))}: ${R.top.map((p) => p.name)}`);
+});

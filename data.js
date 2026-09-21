@@ -52,6 +52,12 @@ const PRINTERS = [
       { store: "Bug", label: "קומבו AMS 2 Pro", ils: 4890, url: BUG + "bambulab/x2d/combo" },
       { store: "Copytech", label: "קומבו AMS 2 Pro", ils: 5080, url: "https://www.copytech.co.il/items/9107683" },
       { store: "3DbotX", label: "קומבו AMS 2 Pro", ils: 5090, url: BOTX + "bambu-lab-x2d-combo-3d-printer" }] },
+  { id: "u1", name: "Snapmaker U1", build: "270×270×270", tags: ["color", "nowaste", "easy"],
+    why: "מחליף ראשים: 4 דיזות נפרדות, אחת לכל חומר. רב-צבעי כמעט בלי בזבוז ובלי \"מגדל ניקוי\" ענק — ומהיר בהרבה מ-AMS בהדפסות עם הרבה החלפות צבע. כיול אוטומטי, מבוסס Klipper, נתמכת ישירות ב-OrcaSlicer.",
+    watch: "מגיעה עם דפנות צד ודלת, אבל המכסה העליון נמכר בנפרד — לא מדפסת סגורה במלואה ולא לחומרים הנדסיים. 4 ראשים = יותר חלקים לתחזק. יצרן חדש יחסית בארץ.",
+    zap: null, prices: [
+      { store: "KSP", ils: 4390, url: "https://ksp.co.il/web/item/491473" },
+      { store: "Yizmaco", ils: 4390, url: "https://3dny.co.il/?p=28934" }] },
   { id: "creality-hi", name: "Creality Hi", build: "260×260×300", tags: ["open", "color", "tinker"],
     why: "רב-צבעי זול עם CFS, מערכת פתוחה יותר לשינויים.",
     watch: "פחות מלוטשת מ-Bambu. נכון לבדיקה האחרונה אזלה אצל המשווקים בארץ — לבדוק זמינות ואחריות לפני שמתאהבים.",
@@ -91,7 +97,8 @@ const QUESTIONS = [
     ["דברים גדולים — קסדות, קוספליי, ארגוניות", { want: ["big", "big", "big"] }],
     ["מיניאטורות ופרטים זעירים", { want: ["easy"], resin: true }]] },
   { id: "color", q: "כמה חשוב לכם רב-צבעי?", a: [
-    ["חובה", { want: ["color", "color"] }], ["נחמד שיהיה בעתיד", { want: ["color"] }], ["לא מעניין", {}]] },
+    // nowaste = מחליף ראשים / דיזות נפרדות: בלי ניקוי חומר בכל החלפה — יתרון אמיתי למי שמדפיס הרבה ברב-צבעי
+    ["חובה", { want: ["color", "color", "nowaste"] }], ["נחמד שיהיה בעתיד", { want: ["color"] }], ["לא מעניין", {}]] },
   { id: "place", q: "איפה המדפסת תעמוד?", a: [
     ["חדר מגורים / חדר ילדים", { want: ["enclosed", "quiet"] }],
     ["חדר עבודה", { want: ["quiet"] }], ["מחסן / מרפסת / סדנה", {}]] },

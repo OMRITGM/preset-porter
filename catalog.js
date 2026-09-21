@@ -16,7 +16,6 @@ const CATALOG = [
   { brand: "Creality", name: "CR-10 SE", build: "220×220×265", enclosed: false, color: null, note: "משטח נע", o: [["Hashmal Neto (דרך Zap)", "", 2820, ZAP + "1213262"]] },
   { brand: "Flashforge", name: "Adventurer 5X (AD5X)", build: "220×220×220", enclosed: false, color: "IFS — 4 צבעים מובנה", note: "CoreXY", o: [["KSP", "", 2090, KSP + "415738"], ["Yizmaco", "", 2290, "https://3dny.co.il/product/flashforge-adventurer-5x/"]] },
   { brand: "Flashforge", name: "Adventurer 5M Pro", build: "220×220×220", enclosed: true, color: null, note: "CoreXY, תא סגור עם סינון", o: [["KSP", "", 2490, KSP + "415609"], ["Copytech", "", 2969, CT + "6486526"], ["Yizmaco", "", 2990, NY + "12299"]] },
-  { brand: "Snapmaker", name: "U1", build: "270×270×270", enclosed: null, color: "4 ראשי הדפסה (toolchanger)", note: "רב-צבעי כמעט בלי בזבוז חומר", o: [["KSP", "", 4390, KSP + "491473"], ["Yizmaco", "", 4390, NY + "28934"]] },
   { brand: "Anycubic", name: "Kobra S1", build: "250×250×250", enclosed: true, color: "ACE Pro (לא כלול)", note: "CoreXY", o: [["Bar-Gal", "", 2250, BARGAL + "12399"]] },
   { brand: "Anycubic", name: "Kobra 3 V2", build: "255×255×260", enclosed: false, color: "ACE Pro (אופציונלי)", note: "משטח נע", o: [["Bar-Gal", "", 1770, BARGAL + "12417"]] },
   { brand: "Anycubic", name: "Kobra 3 Max", build: "420×420×500", enclosed: false, color: "ACE Pro (אופציונלי)", note: "משטח נע ענק", o: [["Bar-Gal", "", 2599, BARGAL + "12736"]] },
