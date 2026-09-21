@@ -163,6 +163,17 @@ if ($("#stores")) $("#stores").innerHTML = STORES.map((s) => `<article class="ca
   <p>${s.why}</p>${s.watch ? `<p class="watch"><b>שימו לב:</b> ${s.watch}</p>` : ""}
   <p>${ext(s.url, "לאתר החנות ←")}</p></article>`).join("");
 
+// כל החנויות שמופיעות במחירים (מומלצות + קטלוג). "דרך Zap" = אין אתר חנות ישיר — לא נכלל.
+if ($("#all-stores")) {
+  const map = {};
+  const addM = (store, url, model) => { if (/Zap/.test(store)) return; (map[store] ||= { url: new URL(url).origin, models: new Set() }).models.add(model); };
+  PRINTERS.forEach((p) => p.prices.forEach((x) => addM(x.store, x.url, p.name)));
+  CATALOG.forEach((c) => c.o.forEach(([store, , , url]) => addM(store, url, `${c.brand} ${c.name}`)));
+  const rows = Object.entries(map).sort((a, b) => b[1].models.size - a[1].models.size || a[0].localeCompare(b[0]));
+  $("#all-stores").innerHTML = `<table><thead><tr><th>חנות</th><th>דגמים באתר</th></tr></thead><tbody>${rows.map(([n, v]) => `<tr>
+    <td><b>${ext(v.url, n)}</b><br><small>${v.models.size} דגמים</small></td><td><small>${[...v.models].map((m) => `<bdi>${m}</bdi>`).join(" · ")}</small></td></tr>`).join("")}</tbody></table>`;
+}
+
 // ---- וואטסאפ + סלייסרים
 if ($("#wa")) {
   if (SITE.whatsapp) $("#wa").href = `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent("היי, הגעתי מהאתר ורוצה עזרה עם מדפסת תלת-ממד")}`;
