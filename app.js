@@ -12,7 +12,7 @@ if (store.get("theme")) document.documentElement.dataset.theme = store.get("them
 // ---- ניווט: כותרת בדסקטופ, סרגל תחתון במובייל
 const PAGES = [["index.html", "שאלון", "M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z"], ["catalog.html", "מדפסות", "M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"],
   ["filaments.html", "פילמנטים", "M12 3a9 9 0 100 18 9 9 0 000-18zM12 9a3 3 0 100 6 3 3 0 000-6zM21 12h-6"], ["guide.html", "שבוע ראשון", "M9 6h11M9 12h11M9 18h11M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"],
-  ["porter.html", "Porter", "M4 8h13l-3-3M20 16H7l3 3"]];
+  ["porter-he.html", "Porter", "M4 8h13l-3-3M20 16H7l3 3"]];
 const here = location.pathname.split("/").pop().replace(".html", "") || "index";
 const cur = (h) => (h.replace(".html", "") === (here === "result" ? "index" : here) ? ' aria-current="page"' : "");
 $("nav").innerHTML = PAGES.map(([h, t]) => `<a href="${h}"${cur(h)}>${t}</a>`).join("") + `<button id="theme" aria-label="מצב כהה / בהיר">◐</button>`;

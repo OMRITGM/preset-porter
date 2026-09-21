@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Preset Porter — פרופילי פילמנט שנתקעו ב-Unsupported אחרי החלפת מדפסת Bambu Lab</title>
+  <meta name="description" content="עברתם מ-P1S, X1C או A1 ל-H2S, H2D, P2S או X2D והפרופילים המכוילים שלכם מופיעים כ-Unsupported? גוררים את קובצי ה-JSON, בוחרים מדפסת ומקבלים פרופיל שעובד. חינם, רץ בדפדפן.">
+  <link rel="alternate" hreflang="en" href="https://3d.omrielcharizi.com/porter">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header><a class="logo" href="index.html">הדפסה <span>ראשונה</span></a><nav></nav></header>
+  <main>
+    <section class="hero"><div>
+      <p class="eyebrow">חינם · רץ בדפדפן · שום קובץ לא עולה לשרת</p>
+      <h1>הפרופילים שלכם, על <em>המדפסת החדשה</em></h1>
+      <p class="lead">החלפתם מדפסת Bambu Lab והפרופילים שכיילתם נפלו ל-<bdi>Unsupported presets</bdi>? גוררים אותם לכאן, בוחרים את המדפסת החדשה ומייבאים את התוצאה. <a href="porter.html" lang="en">English</a></p>
+    </div></section>
+
+    <div class="filters"><label for="model">מדפסת היעד</label> <select id="model" dir="ltr"></select></div>
+    <div id="drop" tabindex="0">גררו לכאן קובצי פרופיל פילמנט (<code>.json</code>), או לחצו לבחירה<br><small>הקבצים מעובדים בדפדפן שלכם בלבד.</small></div>
+    <input type="file" id="pick" accept=".json" multiple hidden>
+    <section id="out"></section>
+
+    <h2>איפה הקבצים שלי?</h2>
+    <ol class="check">
+      <li>Windows: <code dir="ltr">%APPDATA%\BambuStudio\user\&lt;id&gt;\filament</code><br>macOS: <code dir="ltr">~/Library/Application Support/BambuStudio/user/&lt;id&gt;/filament</code></li>
+      <li>לוקחים את קובצי ה-<code>.json</code> (מתעלמים מ-<code>.info</code>). גם פרופילים שיצרני פילמנט מפרסמים עובדים.</li>
+      <li>מייבאים את התוצאה דרך <bdi>File → Import → Import Configs</bdi> כשהמדפסת החדשה נבחרה. הפרופיל יופיע תחת <bdi>User presets → Custom</bdi>.</li>
+    </ol>
+
+    <h2>מה בדיוק משתנה בקובץ</h2>
+    <ol class="check">
+      <li><b>פרופיל האב.</b> פרופיל משתמש שומר רק את השינויים שלכם, ואת כל השאר הוא יורש (<code>inherits</code>) מפרופיל מערכת ששייך למשפחת מדפסות אחת, למשל <code dir="ltr">Generic PLA @BBL P1P</code>. במדפסת אחרת האב הזה לא תקף, ולכן Bambu Studio מסתיר את הפרופיל. Porter מחליף אותו בפרופיל של אותו חומר במדפסת היעד.</li>
+      <li><b>ערכים לפי סוג דיזה.</b> במדפסות החדשות כל הגדרה נשמרת בנפרד לכל סוג דיזה (Standard / High Flow / E3D High Flow, וב-X2D גם Bowden). הערכים שלכם ממופים לפי סוג הדיזה; סוגים שלא היו במדפסת הישנה יורשים את ברירת המחדל.</li>
+      <li>שום דבר אחר. יחס הזרימה, הטמפרטורות והמהירויות נשארים בדיוק כפי שכיילתם. אם הראש החם שונה מאוד — כדאי להריץ שוב כיול זרימה.</li>
+    </ol>
+    <p class="note">נבנה מול פרופילי המערכת של Bambu Studio <span id="ver"></span>. נבדק על H2S אמיתית: פרופילים שנכתבו ל-P1S, ל-X1C ול-A1 ונתקעו תחת Unsupported הופיעו תחת Custom אחרי ההמרה, עם יחס הזרימה המכויל. יעדים אחרים נוצרים מאותם נתונים אבל עוד לא נבדקו בייבוא. אין קשר ל-Bambu Lab. פרופיל שהומר לא נכון? <a href="https://github.com/OMRITGM/preset-porter/issues">פתחו issue</a> — <a href="https://github.com/OMRITGM/preset-porter">הקוד פתוח ב-GitHub</a>.</p>
+  </main>
+  <footer><p>נבנה ע"י עומרי אלחריזי. האתר עצמאי ולא קשור לאף יצרן או יבואן.</p></footer>
+  <script src="data.js"></script><script src="app.js"></script>
+  <script src="bbl-map.js"></script><script src="porter-core.js"></script><script src="porter-ui.js"></script>
+</body>
+</html>
