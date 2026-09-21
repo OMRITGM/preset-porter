@@ -5,14 +5,27 @@ const minPrice = (p) => (p.prices.length ? Math.min(...p.prices.map((x) => x.ils
 const ext = (url, text) => `<a href="${url}" target="_blank" rel="noopener">${text}</a>`;
 const offers = (list) => [...list].sort((a, b) => a.ils - b.ils).map((x) => `${ext(x.url, `${x.store} ${fmt(x.ils)}`)}${x.label ? ` <small>(${x.label})</small>` : ""}`).join("<br>");
 
-// ---- ניווט (כל הדפים)
-$("nav").innerHTML = [["index.html", "שאלון"], ["catalog.html", "כל המדפסות"], ["filaments.html", "פילמנטים"], ["guide.html", "השבוע הראשון"], ["porter.html", "Preset Porter"]]
-  .map(([h, t]) => `<a href="${h}">${t}</a>`).join("");
+// ---- ערכת צבעים: ברירת מחדל לפי המערכת, הכפתור שומר העדפה
+const store = { get: (k) => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch {} } };
+if (store.get("theme")) document.documentElement.dataset.theme = store.get("theme");
 
-function card(p, extra = "") {
+// ---- ניווט: כותרת בדסקטופ, סרגל תחתון במובייל
+const PAGES = [["index.html", "שאלון", "M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z"], ["catalog.html", "מדפסות", "M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"],
+  ["filaments.html", "פילמנטים", "M12 3a9 9 0 100 18 9 9 0 000-18zM12 9a3 3 0 100 6 3 3 0 000-6zM21 12h-6"], ["guide.html", "שבוע ראשון", "M9 6h11M9 12h11M9 18h11M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"],
+  ["porter.html", "Porter", "M4 8h13l-3-3M20 16H7l3 3"]];
+const here = location.pathname.split("/").pop().replace(".html", "") || "index";
+const cur = (h) => (h.replace(".html", "") === (here === "result" ? "index" : here) ? ' aria-current="page"' : "");
+$("nav").innerHTML = PAGES.map(([h, t]) => `<a href="${h}"${cur(h)}>${t}</a>`).join("") + `<button id="theme" aria-label="מצב כהה / בהיר">◐</button>`;
+document.body.insertAdjacentHTML("beforeend", `<div class="tabbar">${PAGES.map(([h, t, d]) => `<a href="${h}"${cur(h)}><svg viewBox="0 0 24 24"><path d="${d}"/></svg>${t}</a>`).join("")}</div>`);
+$("#theme").onclick = () => {
+  const dark = (document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")) === "dark";
+  store.set("theme", (document.documentElement.dataset.theme = dark ? "light" : "dark"));
+};
+
+function card(p, extra = "", pct = null) {
   const m = minPrice(p);
-  return `<article class="card">${extra}
-    <h3><bdi>${p.name}</bdi></h3>
+  return `<article class="card${extra.includes("best") ? " top" : ""}">${extra}
+    <h3><bdi>${p.name}</bdi></h3>${pct === null ? "" : `<p class="match" style="--p:${pct}"><i></i><span>התאמה <b>${pct}%</b></span></p>`}
     <p class="meta"><span dir="ltr">${p.build}</span> מ"מ · ${m ? "מ-" + fmt(m) : "מחיר: בדקו בחנות"}</p>
     <p class="tags">${[...new Set(p.tags)].map((t) => `<span>${TAG_HE[t]}</span>`).join("")}</p>
     <p>${p.why}</p><p class="watch"><b>שימו לב:</b> ${p.watch}</p>
@@ -25,16 +38,18 @@ if ($("#quiz")) {
   const step = () => {
     const i = ans.length, Q = QUESTIONS[i];
     if (!Q) return (location.href = "result.html?a=" + ans.join(""));
-    $("#quiz").innerHTML = `<p class="step">שאלה ${i + 1} מתוך ${QUESTIONS.length}</p><h2>${Q.q}</h2>
-      <div class="opts">${Q.a.map((a, k) => `<button data-k="${k}">${a[0]}</button>`).join("")}</div>
-      ${i ? '<button class="back">→ חזרה</button>' : ""}`;
+    $("#quiz").innerHTML = `<div class="progress">${QUESTIONS.map((_, n) => `<i class="${n <= i ? "on" : ""}"></i>`).join("")}</div>
+      <div class="fade"><p class="step">שאלה ${i + 1} מתוך ${QUESTIONS.length}</p><h2>${Q.q}</h2>
+      <div class="opts">${Q.a.map((a, k) => `<button data-k="${k}" data-n="${k + 1}">${a[0]}</button>`).join("")}</div>
+      ${i ? '<button class="back">→ חזרה</button>' : ""}</div>`;
   };
+  const pick = (k) => { ans.push(String(k)); $(`#quiz [data-k="${k}"]`)?.classList.add("sel"); setTimeout(step, 140); };
   $("#quiz").addEventListener("click", (e) => {
-    if (e.target.dataset.k) ans.push(e.target.dataset.k);
-    else if (e.target.classList.contains("back")) ans.pop();
-    else return;
-    step();
+    const b = e.target.closest("button");
+    if (b?.dataset.k) pick(b.dataset.k);
+    else if (b?.classList.contains("back")) { ans.pop(); step(); }
   });
+  addEventListener("keydown", (e) => { const Q = QUESTIONS[ans.length]; if (Q && +e.key >= 1 && +e.key <= Q.a.length && !e.target.closest("select,input")) pick(+e.key - 1); });
   step();
 }
 
@@ -53,6 +68,7 @@ if ($("#result")) {
   if (picks.length !== QUESTIONS.length) { location.replace("index.html"); throw 0; }
   const max = picks[0].max, want = picks.flatMap((p) => p.want || []);
   const score = (p) => want.filter((t) => p.tags.includes(t)).length;
+  const pct = (p) => (want.length ? Math.round((score(p) / want.length) * 100) : null);
   // שוויון בניקוד → היקרה יותר בתוך התקציב קודמת (מי שהקצה יותר מצפה ליותר)
   const rank = (list) => list.sort((x, y) => score(y) - score(x) || minPrice(y) - minPrice(x));
   const priced = PRINTERS.filter((p) => minPrice(p) !== null);
@@ -62,9 +78,9 @@ if ($("#result")) {
   const stretch = rank(over.filter((p) => !fill.includes(p)))[0];
   $("#result").innerHTML =
     (picks.some((p) => p.resin) ? `<p class="note">למיניאטורות ברמת פירוט גבוהה שווה לבדוק גם מדפסת שרף (Resin) — טכנולוגיה אחרת, עם ריח וכימיקלים. ההמלצות כאן הן למדפסות פילמנט.</p>` : "") +
-    top.map((p, i) => card(p, i ? "" : '<p class="best">ההתאמה הכי טובה</p>')).join("") +
-    fill.map((p) => card(p, '<p class="over">מעט מעל התקציב שבחרתם</p>')).join("") +
-    (stretch && top[0] && score(stretch) > score(top[0]) ? `<h2>אם אפשר למתוח את התקציב</h2>${card(stretch)}` : "");
+    top.map((p, i) => card(p, i ? "" : '<p class="best">ההתאמה הכי טובה</p>', pct(p))).join("") +
+    fill.map((p) => card(p, '<p class="over">מעט מעל התקציב שבחרתם</p>', pct(p))).join("") +
+    (stretch && top[0] && score(stretch) > score(top[0]) ? `<h2>אם אפשר למתוח את התקציב</h2>${card(stretch, "", pct(stretch))}` : "");
 }
 
 // ---- קטלוג מלא (catalog.html)
