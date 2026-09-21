@@ -74,7 +74,7 @@ const PRINTERS = [
     watch: "מגיעה עם דפנות צד ודלת, אבל המכסה העליון נמכר בנפרד — לא מדפסת סגורה במלואה ולא לחומרים הנדסיים. 4 ראשים = יותר חלקים לתחזק. יצרן חדש יחסית בארץ.",
     zap: null, prices: [
       { store: "KSP", ils: 4390, url: "https://ksp.co.il/web/item/491473" },
-      { store: "Yizmaco", ils: 4390, url: "https://3dny.co.il/?p=28934" },
+      { store: "Yazamco", ils: 4390, url: "https://3dny.co.il/?p=28934" },
       { store: "ProMaker", label: "כולל 4 גלילים מתנה", ils: 4590, url: "https://promaker.co.il/product/snapmaker-u1-%D7%9E%D7%93%D7%A4%D7%A1%D7%AA-%D7%AA%D7%9C%D7%AA-%D7%94%D7%9E%D7%99%D7%9E%D7%93-%D7%94%D7%97%D7%93%D7%A9%D7%94-%D7%A9%D7%A2%D7%95%D7%A9%D7%94-%D7%9E%D7%94%D7%A4%D7%9B%D7%94-%D7%91%D7%94/" }] },
   { id: "creality-hi", name: "Creality Hi", build: "260×260×300", tags: ["open", "color", "tinker"],
     why: "רב-צבעי זול עם CFS, מערכת פתוחה יותר לשינויים.",
@@ -85,7 +85,7 @@ const PRINTERS = [
     watch: "יקרה ביחס למפרט. רב-צבעי (MMU3) נמכר בנפרד ודורש סבלנות.",
     zap: null, prices: [
       { store: "Copytech", label: "מורכבת", ils: 6440, url: "https://www.copytech.co.il/items/8350644" },
-      { store: "Yizmaco", label: "CORE One, מורכבת", ils: 6599, url: "https://3dny.co.il/product/prusa-core-one-%d7%9e%d7%93%d7%a4%d7%a1%d7%aa-%d7%aa%d7%9c%d7%aa-%d7%9e%d7%99%d7%9e%d7%93/" }] },
+      { store: "Yazamco", label: "CORE One, מורכבת", ils: 6599, url: "https://3dny.co.il/product/prusa-core-one-%d7%9e%d7%93%d7%a4%d7%a1%d7%aa-%d7%aa%d7%9c%d7%aa-%d7%9e%d7%99%d7%9e%d7%93/" }] },
   { id: "k2-plus", name: "Creality K2 Plus", build: "350×350×350", tags: ["enclosed", "color", "big", "eng", "tinker"],
     why: "משטח ענק סגור עם רב-צבעי. Klipper מתחת למכסה.",
     watch: "גדולה וכבדה. בקרת איכות פחות עקבית — לקנות ממשווק עם אחריות בארץ.",
