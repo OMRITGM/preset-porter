@@ -105,6 +105,25 @@ const PRINTERS = [
       { store: "Yazamco", label: "קומבו AMS 2 Pro + לייזר 10W", ils: 11449, url: "https://3dny.co.il/product/%d7%9e%d7%93%d7%a4%d7%a1%d7%aa-%d7%aa%d7%9c%d7%aa-%d7%9e%d7%99%d7%9e%d7%93-bambu-lab-h2s-laser-10w-full-combo/" },
       { store: "ProMaker", label: "קומבו AMS 2", ils: 6990, url: "https://promaker.co.il/product/bambu-lab-h2s-%D7%A2%D7%95%D7%A6%D7%9E%D7%AA-%D7%A1%D7%A8%D7%95%D7%95-%D7%93%D7%99%D7%95%D7%A7-%D7%9E%D7%95%D7%A9%D7%9C%D7%9D-%D7%95%D7%A0%D7%A4%D7%97-%D7%94%D7%93%D7%A4%D7%A1%D7%94-%D7%94%D7%92/" },
       { store: "Spider3D", label: "קומבו AMS 2 Pro, הזמנה מוקדמת", ils: 7490, url: "https://www.spider3d.co.il/bambu-lab-h2s-%D7%9E%D7%93%D7%A4%D7%A1%D7%AA-%D7%AA%D7%9C%D7%AA%D7%9E%D7%9E%D7%93-%D7%9E%D7%A7%D7%A6%D7%95%D7%A2%D7%99%D7%AA-%D7%9E%D7%94%D7%99%D7%A8%D7%94-%D7%95%D7%9E%D7%93%D7%95/" }] },
+  { id: "h2d", name: "Bambu Lab H2D", build: "325×320×325", tags: ["enclosed", "color", "big", "eng", "easy", "quiet"],
+    why: "שתי דיזות, תא מחומם ו-350°C: שני חומרים או צבעים בלי בזבוז בהחלפה ביניהם, וחומרים הנדסיים. הדגל של Bambu לבית ולסדנה.",
+    watch: "מעל 2 צבעים — עדיין החלפות עם AMS ופסולת. מחיר. בגרסת הלייזר: עשן ולכלוך בכל המדפסת — ניקוי תכוף ואוורור חובה.",
+    zap: null, prices: [
+      { store: "Copytech", label: "קומבו", ils: 9790, url: "https://www.copytech.co.il/items/8112656" },
+      { store: "Bug", label: "קומבו", ils: 10390, url: "https://www.bug.co.il/brand/bambulab/h2d/ams/2/pro/combo" },
+      { store: "ProMaker", label: "קומבו", ils: 10390, url: "https://promaker.co.il/product/bambu-lab-h2d-combo-%D7%94%D7%A9%D7%99%D7%9C%D7%95%D7%91-%D7%94%D7%9E%D7%95%D7%A9%D7%9C%D7%9D-%D7%9E%D7%93%D7%A4%D7%A1%D7%AA-h2d-%D7%97%D7%96%D7%A7%D7%94-%D7%9E%D7%A2%D7%A8%D7%9B%D7%AA-ams-%D7%90/" },
+      { store: "Beyond3D", ils: 10600, url: "https://beyond3d.co.il/product/h2d-bambulab/" },
+      { store: "Spider3D", label: "קומבו, הזמנה מוקדמת", ils: 11290, url: "https://www.spider3d.co.il/bambu-lab-h2d-%D7%9E%D7%A8%D7%9B%D7%96-%D7%99%D7%99%D7%A6%D7%95%D7%A8-%D7%90%D7%99%D7%A9%D7%99-%D7%9E%D7%A9%D7%95%D7%9C%D7%91-%D7%94%D7%93%D7%A4%D7%A1%D7%AA-%D7%AA%D7%9C%D7%AA-%D7%9E%D7%99%D7%9E/" },
+      { store: "Yazamco", label: "קומבו", ils: 11499, url: "https://3dny.co.il/product/%d7%9e%d7%93%d7%a4%d7%a1%d7%aa-%d7%aa%d7%9c%d7%aa-%d7%9e%d7%99%d7%9e%d7%93-bambu-lab-h2d-combo/" }] },
+  { id: "h2c", name: "Bambu Lab H2C", build: "330×320×325", tags: ["enclosed", "color", "nowaste", "big", "eng", "easy", "quiet"],
+    why: "H2D עם מחליף דיזות Vortek: כמה ראשים חמים שמתחלפים אוטומטית — רב-צבעי עם הרבה פחות פסולת וזמן החלפה.",
+    watch: "הכי יקרה בשאלון. דגם חדש — מעט ניסיון מצטבר. למתחיל זה הרבה כסף; H2S או P2S מספיקות לרוב האנשים.",
+    zap: null, prices: [
+      { store: "Copytech", label: "קומבו", ils: 10890, url: "https://www.copytech.co.il/items/8717428" },
+      { store: "3DbotX", label: "קומבו", ils: 11790, url: "https://www.3dbotx.co.il/product-page/bambu-lab-h2c-ams-2-pro-combo" },
+      { store: "Bug", label: "קומבו", ils: 11790, url: "https://www.bug.co.il/brand/bambulab/h2c/ams2/pro/combo" },
+      { store: "ProMaker", label: "קומבו", ils: 11790, url: "https://promaker.co.il/product/bambu-lab-h2c-%D7%9E%D7%A7%D7%A6%D7%95%D7%A2%D7%99%D7%AA-%D7%9E%D7%93%D7%95%D7%99%D7%99%D7%A7%D7%AA-%D7%AA%D7%90-%D7%9E%D7%97%D7%95%D7%9E%D7%9D-%D7%A2%D7%93-6-%D7%A8%D7%90%D7%A9%D7%99-%D7%94%D7%93/" },
+      { store: "Yazamco", label: "קומבו", ils: 12490, url: "https://3dny.co.il/product/%d7%9e%d7%93%d7%a4%d7%a1%d7%aa-%d7%aa%d7%9c%d7%aa-%d7%9e%d7%99%d7%9e%d7%93-bambu-lab-h2c-combo/" }] },
 ];
 
 // התקציב מסנן לפי המחיר הזול ביותר בארץ (prices). דגם בלי מחיר לא מופיע בהמלצות.
