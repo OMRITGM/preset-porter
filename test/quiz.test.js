@@ -78,3 +78,14 @@ test("multi-color must: a waste-free toolchanger in budget is ranked ahead of AM
   const R = recommend(PRINTERS, QUESTIONS, a);
   assert.ok(R.top.some((p) => p.id === "u1"), `U1 missing for ${label(a.map(Number))}: ${R.top.map((p) => p.name)}`);
 });
+
+test("regression (Facebook report): above ₪8,000 the picks cost above ₪8,000", () => {
+  for (const { a, R } of cases) if (a[0] === 4) assert.ok(R.top.length && R.top.every((p) => R.price(p) >= 8000), `cheap top pick for: ${label(a)}`);
+});
+
+test("regression (Facebook report): with multi-colour a must, dual-nozzle H2D beats single-nozzle H2S", () => {
+  for (const { a, R } of cases) if (a[2] === 0) {
+    const h2d = PRINTERS.find((p) => p.id === "h2d"), h2s = PRINTERS.find((p) => p.id === "h2s");
+    assert.ok(R.pct(h2d) > R.pct(h2s), `H2D ${R.pct(h2d)}% vs H2S ${R.pct(h2s)}%: ${label(a)}`);
+  }
+});

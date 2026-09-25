@@ -6,6 +6,7 @@ const SITE = {
 
 const BOTX = "https://www.3dbotx.co.il/product-page/", BUG = "https://www.bug.co.il/brand/";
 
+// part: התאמה חלקית לתגית (0–1), למשל שתי דיזות = חצי "בלי פסולת" — שלא יקבלו אותו אחוז כמו מדפסת בלי
 // tags: open/enclosed, color (רב-צבעי זמין), big (משטח ≥300), eng (חומרים הנדסיים), easy (עובד מהקופסה), tinker (פתוח לשינויים), quiet
 const PRINTERS = [
   { id: "a1-mini", name: "Bambu Lab A1 mini", build: "180×180×180", tags: ["open", "color", "easy", "quiet"],
@@ -61,7 +62,7 @@ const PRINTERS = [
       { store: "ProMaker", ils: 3390, url: "https://promaker.co.il/product/bambu-lab-p2s-%D7%94%D7%93%D7%95%D7%A8-%D7%94%D7%97%D7%93%D7%A9-%D7%A9%D7%9C-%D7%A1%D7%93%D7%A8%D7%AA-p-%D7%9E%D7%91%D7%A0%D7%94-%D7%A1%D7%92%D7%95%D7%A8-%D7%90%D7%A7%D7%A1%D7%98%D7%A8%D7%95%D7%93/" },
       { store: "ProMaker", label: "קומבו AMS 2 Pro", ils: 3990, url: "https://promaker.co.il/product/%D7%9E%D7%93%D7%A4%D7%A1%D7%AA-%D7%AA%D7%9C%D7%AA-%D7%9E%D7%99%D7%9E%D7%93-bambu-lab-p2s-ams-2-pro-combo-%D7%91%D7%A2%D7%9C%D7%AA-%D7%90%D7%A7%D7%A1%D7%98%D7%A8%D7%95%D7%93%D7%A8-servo-%D7%95%D7%9E/" },
       { store: "Spider3D", label: "קומבו AMS 2 Pro, הזמנה מוקדמת", ils: 5190, url: "https://www.spider3d.co.il/bambu-lab-p2s/" }] },
-  { id: "x2d", name: "Bambu Lab X2D", build: "256×256×260", tags: ["enclosed", "color", "eng", "easy"],
+  { id: "x2d", name: "Bambu Lab X2D", build: "256×256×260", tags: ["enclosed", "color", "eng", "easy"], part: { nowaste: 0.5 },
     why: "סגורה עם תא מחומם אקטיבית (65°C) ושתי דיזות — חומר תמיכה נפרד או שני צבעים בלי בזבוז של החלפות. בנויה לחומרים הנדסיים.",
     watch: "לפי Bambu עצמה הדיזה השנייה איטית יותר ובאיכות מעט נמוכה. בקומבו ה-AMS מזין רק דיזה אחת. בארץ נמכרת כרגע רק כקומבו. דגם חדש.",
     zap: null, prices: [
@@ -105,7 +106,7 @@ const PRINTERS = [
       { store: "Yazamco", label: "קומבו AMS 2 Pro + לייזר 10W", ils: 11449, url: "https://3dny.co.il/product/%d7%9e%d7%93%d7%a4%d7%a1%d7%aa-%d7%aa%d7%9c%d7%aa-%d7%9e%d7%99%d7%9e%d7%93-bambu-lab-h2s-laser-10w-full-combo/" },
       { store: "ProMaker", label: "קומבו AMS 2", ils: 6990, url: "https://promaker.co.il/product/bambu-lab-h2s-%D7%A2%D7%95%D7%A6%D7%9E%D7%AA-%D7%A1%D7%A8%D7%95%D7%95-%D7%93%D7%99%D7%95%D7%A7-%D7%9E%D7%95%D7%A9%D7%9C%D7%9D-%D7%95%D7%A0%D7%A4%D7%97-%D7%94%D7%93%D7%A4%D7%A1%D7%94-%D7%94%D7%92/" },
       { store: "Spider3D", label: "קומבו AMS 2 Pro, הזמנה מוקדמת", ils: 7490, url: "https://www.spider3d.co.il/bambu-lab-h2s-%D7%9E%D7%93%D7%A4%D7%A1%D7%AA-%D7%AA%D7%9C%D7%AA%D7%9E%D7%9E%D7%93-%D7%9E%D7%A7%D7%A6%D7%95%D7%A2%D7%99%D7%AA-%D7%9E%D7%94%D7%99%D7%A8%D7%94-%D7%95%D7%9E%D7%93%D7%95/" }] },
-  { id: "h2d", name: "Bambu Lab H2D", build: "325×320×325", tags: ["enclosed", "color", "big", "eng", "easy", "quiet"],
+  { id: "h2d", name: "Bambu Lab H2D", build: "325×320×325", tags: ["enclosed", "color", "big", "eng", "easy", "quiet"], part: { nowaste: 0.5 },
     why: "שתי דיזות, תא מחומם ו-350°C: שני חומרים או צבעים בלי בזבוז בהחלפה ביניהם, וחומרים הנדסיים. הדגל של Bambu לבית ולסדנה.",
     watch: "מעל 2 צבעים — עדיין החלפות עם AMS ופסולת. מחיר. בגרסת הלייזר: עשן ולכלוך בכל המדפסת — ניקוי תכוף ואוורור חובה.",
     zap: null, prices: [
@@ -129,9 +130,10 @@ const PRINTERS = [
 // התקציב מסנן לפי המחיר הזול ביותר בארץ (prices). דגם בלי מחיר לא מופיע בהמלצות.
 const QUESTIONS = [
   { id: "budget", q: "מה התקציב למדפסת עצמה?", a: [
-    // min = רצפה רכה (~75% מתחתית הטווח; 60% בטווח העליון כדי לא לחתוך דגמים של ₪6,000): מי שהקצה ₪8,000 לא צריך מדפסת של ₪900
+    // min = רצפה רכה (~75% מתחתית הטווח): מי שהקצה ₪5,000 לא צריך מדפסת של ₪900. בטווח העליון הרצפה קשיחה —
+    // מי שבחר "מעל ₪8,000" מצפה למדפסות מעל ₪8,000; הזולות מופיעות רק כ"זולה מהתקציב"
     ["עד ₪1,200", { min: 0, max: 1200 }], ["₪1,200 עד ₪2,500", { min: 900, max: 2500 }],
-    ["₪2,500 עד ₪5,000", { min: 1875, max: 5000 }], ["₪5,000 עד ₪8,000", { min: 3750, max: 8000 }], ["מעל ₪8,000", { min: 4800, max: Infinity }]] },
+    ["₪2,500 עד ₪5,000", { min: 1875, max: 5000 }], ["₪5,000 עד ₪8,000", { min: 3750, max: 8000 }], ["מעל ₪8,000", { min: 8000, max: Infinity }]] },
   { id: "use", q: "מה בעיקר תדפיסו?", a: [
     ["צעצועים, קישוטים, גאדג'טים לבית", { want: ["easy"] }],
     ["חלקים פונקציונליים — לרכב, לכלים, לחוץ", { want: ["enclosed", "eng"] }],

@@ -5,7 +5,7 @@ function recommend(PRINTERS, QUESTIONS, answers) {
   if (picks.length !== QUESTIONS.length) return null;
   const price = (p) => (p.prices.length ? Math.min(...p.prices.map((x) => x.ils)) : null);
   const { min = 0, max } = picks[0], want = picks.flatMap((p) => p.want || []);
-  const score = (p) => want.filter((t) => p.tags.includes(t)).length;
+  const score = (p) => want.reduce((s, t) => s + (p.tags.includes(t) ? 1 : p.part?.[t] || 0), 0);
   const pct = (p) => (want.length ? Math.round((score(p) / want.length) * 100) : null);
   // tie on score -> the pricier one inside the budget first (someone who allotted more expects more)
   const rank = (list) => list.sort((x, y) => score(y) - score(x) || price(y) - price(x));
