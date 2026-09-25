@@ -55,7 +55,7 @@ const { preset, notes } = portPreset(JSON.parse(fs.readFileSync("My PETG.json", 
 | `porter.html` | The web UI. |
 | `worker.js` | Cloudflare Worker: serves the site and counts downloads anonymously (date, target printer, referrer host — no IPs, no cookies). Totals are public at [`/api/stats`](https://3d.omrielcharizi.com/api/stats). |
 
-The same repo also holds **[הדפסה ראשונה](https://3d.omrielcharizi.com)** — an independent Hebrew guide for first-time 3D-printer buyers in Israel (printer picker, Israeli price catalog, manufacturer-sourced filament settings, first-week checklist). Content lives in `data.js`, `catalog.js`, `filaments.js`; `npm run check:links` verifies every external link.
+The same repo also holds **[הדפסה ראשונה](https://3d.omrielcharizi.com)** — an independent Hebrew guide for first-time 3D-printer buyers in Israel (printer picker, Israeli price catalog, manufacturer-sourced filament settings, first-week checklist). Content lives in `data.js` and `filaments.js`; `npm run check:links` verifies every external link.
 
 ## Development
 

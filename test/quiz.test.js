@@ -1,7 +1,7 @@
 // Exhaustive check of the printer quiz: every combination of answers (5 x 4 x 3 x 3 x 2 = 360).
 const test = require("node:test"), assert = require("node:assert");
 const { PRINTERS, QUESTIONS } = require("../data.js");
-const { recommend } = require("../quiz-core.js");
+const { recommend, colourPrice } = require("../quiz-core.js");
 
 const all = [[]];
 for (const Q of QUESTIONS) all.splice(0, all.length, ...all.flatMap((c) => Q.a.map((_, k) => [...c, k])));
@@ -116,4 +116,22 @@ test("'slightly over budget' never clearly (5+ points) outranks the best-match b
 test("regression (Ramsay review): multi-colour a must is priced as the multi-colour combo", () => {
   const mini = PRINTERS.find((p) => p.id === "a1-mini");
   for (const { a, R } of cases) if (a[2] === 0) assert.ok(R.price(mini) > 1200, `A1 mini priced bare for: ${label(a)}`);
+});
+
+// Ramsay review: "multi-colour is a must" once recommended an Ender-3 (no multi-colour at all).
+const canColour = (p) => colourPrice(p) !== null;
+test("multi-colour a must: every printer on screen can actually print multi-colour", () => {
+  for (const { a, R } of cases) if (a[2] === 0) for (const p of shown(R)) assert.ok(canColour(p), `${p.name} for: ${label(a)}`);
+});
+
+test("data: an add-on-only multi-colour printer declares colorAddon; 'open' tag <=> no enclosure at all", () => {
+  for (const p of PRINTERS) {
+    const addonOnly = p.g.color > 0 && p.g.color < 0.7 && !p.prices.some((x) => x.mc || /קומבו/.test(x.label || ""));
+    if (addonOnly) assert.ok("colorAddon" in p, `${p.name}: multi-colour via add-on but no colorAddon`);
+    assert.equal(has(p, "open"), p.g.enclosed === 0, `${p.name}: open tag vs enclosed ${p.g.enclosed}`);
+  }
+});
+
+test("data: a printer graded as multi-colour (color >= 0.7) has a way to buy it: combo, priced add-on or built in", () => {
+  for (const p of PRINTERS) if (p.g.color >= 0.7) assert.ok(colourPrice(p) !== null, `${p.name}: color ${p.g.color} but no multi-colour offer`);
 });

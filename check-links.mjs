@@ -1,10 +1,9 @@
 // node check-links.mjs — בודק כל קישור חיצוני באתר. לא עולה לפרסום (.assetsignore).
 import { readFileSync, readdirSync } from "node:fs";
-const src = ["data.js", "catalog.js", "filaments.js"].map((f) => readFileSync(new URL(f, import.meta.url), "utf8")).join("\n");
-const d = new Function(src + "; return { PRINTERS, CATALOG, FILAMENTS, SLICERS };")();
+const src = ["data.js", "filaments.js"].map((f) => readFileSync(new URL(f, import.meta.url), "utf8")).join("\n");
+const d = new Function(src + "; return { PRINTERS, FILAMENTS, SLICERS };")();
 const urls = new Map(), add = (u, where) => u && urls.set(u, where);
 d.PRINTERS.forEach((p) => { add(p.zap, p.name + " zap"); p.prices.forEach((x) => add(x.url, `${p.name} / ${x.store}`)); });
-d.CATALOG.forEach((c) => c.o.forEach(([store, , , url]) => add(url, `${c.brand} ${c.name} / ${store}`)));
 d.FILAMENTS.forEach((f) => { add(f.src, `${f.brand} ${f.line} src`); add(f.ready.url, f.brand + " presets"); });
 d.SLICERS.forEach((s) => add(s.url, s.name));
 for (const f of readdirSync(new URL(".", import.meta.url)).filter((f) => f.endsWith(".html")))

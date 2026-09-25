@@ -1,13 +1,22 @@
 // Quiz recommendation logic — pure, shared by result.html (via app.js) and test/quiz.test.js.
 // recommend(PRINTERS, QUESTIONS, answers) -> { top, fill, under, stretch, pct(p), price(p), bundled(p), low, resin } | null for invalid answers.
+// Price of a printer set up for multi-colour: its combo / multi-head offer (label "קומבו" or mc: true), bare + a priced
+// add-on (colorAddon), or bare if multi-colour is built in (colorBuiltIn). null = no multi-colour at a known Israeli price.
+const colourOffers = (p) => p.prices.filter((x) => x.mc || /קומבו/.test(x.label || ""));
+function colourPrice(p) {
+  const lowest = (list) => (list.length ? Math.min(...list.map((x) => x.ils)) : null);
+  if (colourOffers(p).length) return lowest(colourOffers(p));
+  if (p.colorAddon && p.prices.length) return lowest(p.prices) + p.colorAddon;
+  return p.colorBuiltIn ? lowest(p.prices) : null;
+}
+
 function recommend(PRINTERS, QUESTIONS, answers) {
   const picks = QUESTIONS.map((Q, i) => Q.a[answers[i]]?.[1]).filter(Boolean);
   if (picks.length !== QUESTIONS.length) return null;
-  // multi-colour a must -> judge each printer at the price of its multi-colour setup: its combo, or bare + add-on (data.js colorAddon)
+  // multi-colour a must -> each printer is judged at colourPrice(); printers without one are not recommended at all
   const combo = picks.some((p) => p.combo);
-  const combos = (p) => p.prices.filter((x) => /קומבו/.test(x.label || ""));
-  const bundled = (p) => combo && (combos(p).length > 0 || !!p.colorAddon);
-  const price = (p) => (p.prices.length ? Math.min(...(combo && combos(p).length ? combos(p) : p.prices).map((x) => x.ils)) + (combo && !combos(p).length ? p.colorAddon || 0 : 0) : null);
+  const bundled = (p) => combo && (colourOffers(p).length > 0 || !!p.colorAddon);
+  const price = (p) => (combo ? colourPrice(p) : p.prices.length ? Math.min(...p.prices.map((x) => x.ils)) : null);
   const { min = 0, max } = picks[0], want = picks.flatMap((p) => p.want || []);
   // graded 0-1 per trait (data.js `g`), kept as integer thousandths so float noise never decides a ranking or a threshold
   const score = (p) => Math.round(want.reduce((s, t) => s + (p.g[t] || 0), 0) * 1000);
@@ -39,4 +48,4 @@ function recommend(PRINTERS, QUESTIONS, answers) {
   if (best && cheaper[0] && !under.includes(cheaper[0]) && clearlyBetter(cheaper[0], best)) under.unshift(cheaper[0]);
   return { top, fill, under, stretch, pct, score, price, bundled, min, max, want, low, resin };
 }
-if (typeof module !== "undefined") module.exports = { recommend };
+if (typeof module !== "undefined") module.exports = { recommend, colourPrice };

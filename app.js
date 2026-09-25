@@ -26,7 +26,7 @@ $("#theme").onclick = () => {
 function card(p, extra = "", pct = null, m = minPrice(p), bundle = false) {
   return `<article class="card${extra.includes("best") ? " top" : ""}">${extra}
     <h3><bdi>${p.name}</bdi></h3>${pct === null ? "" : `<p class="match" style="--p:${pct}"><i></i><span>התאמה <b>${pct}%</b></span></p>`}
-    <p class="meta"><span dir="ltr">${p.build}</span> מ"מ · ${m ? "מ-" + fmt(m) + (bundle ? (p.colorAddon && m > minPrice(p) ? " (כולל תוסף רב-צבעי)" : " (קומבו רב-צבעי)") : "") : "מחיר: בדקו בחנות"}</p>
+    <p class="meta"><span dir="ltr">${p.build}</span> מ"מ · ${m ? "מ-" + fmt(m) + (bundle && p.colorAddon && m > minPrice(p) ? " (כולל תוסף רב-צבעי)" : ((o) => (!o ? "" : o.mc ? ` (${o.label})` : " (קומבו רב-צבעי)"))(p.prices.find((x) => x.ils === m && (x.mc || /קומבו/.test(x.label || ""))))) : "מחיר: בדקו בחנות"}</p>
     <p class="tags">${[...new Set(p.tags)].map((t) => TAG_LINK[t] ? `<a href="basics.html#${TAG_LINK[t]}" title="מה זה?"><span>${TAG_HE[t]} ⓘ</span></a>` : `<span>${TAG_HE[t]}</span>`).join("")}</p>
     <p>${p.why}</p><p class="watch"><b>שימו לב:</b> ${p.watch}</p>
     <p><a href="index.html#p-${p.id}">מחירים בארץ ←</a></p></article>`;
@@ -53,7 +53,7 @@ if ($("#quiz")) {
   step();
 }
 
-// ---- טבלת המומלצות (index.html)
+// ---- טבלת המחירים (index.html)
 if ($("#price-table")) {
   // הגיעו מכרטיס (#p-<id>) — הדגם הזה ראשון ומודגש, השאר אחריו
   const pick = location.hash.slice(3);
@@ -61,7 +61,7 @@ if ($("#price-table")) {
   $("#price-table").innerHTML = `<table><thead><tr><th>דגם</th><th>מחירים בארץ</th></tr></thead><tbody>${rows.map((p) => `<tr id="p-${p.id}"${p.id === pick ? ' class="picked"' : ""}>
     <td><b><bdi>${p.name}</bdi></b><br><small><span dir="ltr">${p.build}</span> מ"מ</small></td>
     <td>${p.prices.length ? offers(p.prices) : "אין כרגע במלאי בחנויות שבדקתי"}${p.zap ? `<br>${ext(p.zap, "השוואה ב-Zap")}` : ""}</td></tr>`).join("")}</tbody></table>
-    <p class="meta">מחירים כפי שפורסמו באתרי החנויות ב-${SITE.pricesChecked}. בלי קישורי שותפים. מחיר ומלאי משתנים — תמיד לוודא בחנות.</p>`;
+    <p class="meta">מחירים כפי שפורסמו באתרי החנויות ב-${SITE.pricesChecked}. בלי קישורי שותפים. מחיר ומלאי משתנים — תמיד לוודא בחנות. "דרך Zap" = הצעה של חנות שנקראה מדף ההשוואה ולא אומתה אצל המוכר.</p>`;
   if (document.getElementById("p-" + pick)) addEventListener("load", () => $("#prices").scrollIntoView({ behavior: "instant" }));
 }
 
@@ -81,24 +81,24 @@ if ($("#result")) {
 
 // ---- קטלוג מלא (catalog.html)
 if ($("#catalog")) {
-  const BRANDS = ["Bambu Lab", "Creality", "Elegoo", "Prusa", "Snapmaker"];
+  $("#checked").textContent = SITE.pricesChecked;
+  const BRANDS = ["Bambu Lab", "Creality", "Elegoo", "Prusa", "Snapmaker", "Flashforge", "Anycubic", "Two Trees", "QIDI"];
   const all = [
-    ...PRINTERS.map((p) => { const brand = BRANDS.find((b) => p.name.startsWith(b)) || p.name.split(" ")[0]; return { brand, name: p.name.slice(brand.length + 1), build: p.build, enclosed: p.tags.includes("enclosed"), color: p.tags.includes("color") ? "כן" : null, note: "", rec: true, prices: p.prices }; }),
-    ...CATALOG.map((c) => ({ ...c, prices: c.o.map(([store, label, ils, url]) => ({ store, label, ils, url })) })),
+    ...PRINTERS.map((p) => { const brand = BRANDS.find((b) => p.name.startsWith(b)) || p.name.split(" ")[0]; return { brand, name: p.name.slice(brand.length + 1), build: p.build, enclosed: p.g.enclosed >= 0.7 ? true : p.g.enclosed > 0 ? null : false, color: p.colorNote || (p.tags.includes("color") ? "כן" : null), colourPrice: colourPrice(p), note: p.note || "", prices: p.prices }; }),
   ];
   const brands = [...new Set(all.map((m) => m.brand))].sort();
   $("#filters").innerHTML = `<select id="f-brand" aria-label="יצרן"><option value="">כל היצרנים</option>${brands.map((b) => `<option>${b}</option>`).join("")}</select>
     <select id="f-max" aria-label="מחיר מרבי"><option value="">כל מחיר</option>${[1500, 2500, 4000, 6000, 9000].map((n) => `<option value="${n}">עד ${fmt(n)}</option>`).join("")}</select>
     <label><input type="checkbox" id="f-enc"> סגורות בלבד</label> <label><input type="checkbox" id="f-col"> עם רב-צבעי</label>`;
-  const yn = (v) => (v === null ? "לא אומת" : v ? "סגורה" : "פתוחה");
+  const yn = (v) => (v === null ? "חצי-סגורה" : v ? "סגורה" : "פתוחה");
   const draw = () => {
     const b = $("#f-brand").value, mx = +$("#f-max").value || Infinity;
-    const rows = all.filter((m) => (!b || m.brand === b) && (!$("#f-enc").checked || m.enclosed) && (!$("#f-col").checked || m.color) && (mx === Infinity || (minPrice(m) !== null && minPrice(m) <= mx)))
+    const rows = all.filter((m) => (!b || m.brand === b) && (!$("#f-enc").checked || m.enclosed) && (!$("#f-col").checked || m.colourPrice !== null) && (mx === Infinity || ((v) => v !== null && v <= mx)($("#f-col").checked ? m.colourPrice : minPrice(m))))
       .sort((x, y) => (minPrice(x) ?? 1e9) - (minPrice(y) ?? 1e9));
     $("#catalog").innerHTML = `<p class="meta">${rows.length} דגמים</p><table><thead><tr><th>דגם</th><th>מבנה</th><th>מחירים בארץ</th></tr></thead><tbody>${rows.map((m) => `<tr>
-      <td><b><bdi>${m.brand} ${m.name}</bdi></b>${m.rec ? ' <span class="best">מומלץ</span>' : ""}<br><small><span dir="ltr">${m.build}</span> מ"מ${m.note ? " · " + m.note : ""}</small></td>
-      <td>${yn(m.enclosed)}<br><small>רב-צבעי: ${m.color ?? "אין / לא אומת"}</small></td>
-      <td>${m.prices.length ? offers(m.prices) : "אזל במלאי"}</td></tr>`).join("")}</tbody></table>`;
+      <td><b><bdi>${m.brand} ${m.name}</bdi></b><br><small><span dir="ltr">${m.build}</span> מ"מ${m.note ? " · " + m.note : ""}</small></td>
+      <td>${yn(m.enclosed)}<br><small>רב-צבעי: ${m.color ?? "אין"}</small></td>
+      <td>${m.prices.length ? offers(m.prices) : "אין כרגע במלאי בחנויות שבדקתי"}</td></tr>`).join("")}</tbody></table>`;
   };
   $("#filters").addEventListener("change", draw);
   draw();
@@ -164,12 +164,11 @@ if ($("#stores")) $("#stores").innerHTML = STORES.map((s) => `<article class="ca
   <p>${s.why}</p>${s.watch ? `<p class="watch"><b>שימו לב:</b> ${s.watch}</p>` : ""}
   <p>${ext(s.url, "לאתר החנות ←")}</p></article>`).join("");
 
-// כל החנויות שמופיעות במחירים (מומלצות + קטלוג). "דרך Zap" = אין אתר חנות ישיר — לא נכלל.
+// כל החנויות שמופיעות במחירים. "דרך Zap" = אין אתר חנות ישיר — לא נכלל.
 if ($("#all-stores")) {
   const map = {};
   const addM = (store, url, model) => { if (/Zap/.test(store)) return; (map[store] ||= { url: new URL(url).origin, models: new Set() }).models.add(model); };
   PRINTERS.forEach((p) => p.prices.forEach((x) => addM(x.store, x.url, p.name)));
-  CATALOG.forEach((c) => c.o.forEach(([store, , , url]) => addM(store, url, `${c.brand} ${c.name}`)));
   const rows = Object.entries(map).sort((a, b) => b[1].models.size - a[1].models.size || a[0].localeCompare(b[0]));
   $("#all-stores").innerHTML = `<table><thead><tr><th>חנות</th><th>דגמים באתר</th></tr></thead><tbody>${rows.map(([n, v]) => `<tr>
     <td><b>${ext(v.url, n)}</b><br><small>${v.models.size} דגמים</small></td><td><small>${[...v.models].map((m) => `<bdi>${m}</bdi>`).join(" · ")}</small></td></tr>`).join("")}</tbody></table>`;
