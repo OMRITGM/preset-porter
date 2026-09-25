@@ -6,10 +6,14 @@ const SITE = {
 
 const BOTX = "https://www.3dbotx.co.il/product-page/", BUG = "https://www.bug.co.il/brand/";
 
-// part: התאמה חלקית לתגית (0–1), למשל שתי דיזות = חצי "בלי פסולת" — שלא יקבלו אותו אחוז כמו מדפסת בלי
+// colorAddon = מחיר תוסף רב-צבעי שנמכר בנפרד (כשאין קומבו) — נוסף למחיר כשרב-צבעי חובה
+// g = דירוג מדורג 0–1 לכל תכונה — לפיו מחושבת ההתאמה (quiz-core.js). tags = מה שמוצג בכרטיס: תגית ⇔ דירוג ≥ 0.7 (נבדק ב-test/quiz.test.js).
+//   enclosed: פתוחה 0 · חצי-סגורה 0.4 · סגורה 0.8 · תא מחומם אקטיבית 1 | color: תוסף בנפרד ~0.4 · AMS 0.7–0.85 · הרבה ראשים/דיזות 0.9–1
+//   nowaste: AMS 0 · שתי דיזות 0.5 · מחליף דיזות 0.8 · מחליף ראשים 1 | big: 18 ס"מ 0 · 25 ס"מ 0.15 (קסדה לא נכנסת) · 32 ס"מ ומעלה 1
 // tags: open/enclosed, color (רב-צבעי זמין), big (משטח ≥300), eng (חומרים הנדסיים), easy (עובד מהקופסה), tinker (פתוח לשינויים), quiet
 const PRINTERS = [
   { id: "a1-mini", name: "Bambu Lab A1 mini", build: "180×180×180", tags: ["open", "color", "easy", "quiet"],
+    g: { enclosed: 0, eng: 0.1, color: 0.7, nowaste: 0, big: 0, easy: 1, quiet: 0.8, tinker: 0.2 },
     why: "הכניסה הכי זולה והכי חלקה לתחום. משטח קטן — מספיק לרוב ההדפסות הביתיות.",
     watch: "משטח 18 ס\"מ מגביל. פתוחה — PLA/PETG בלבד בפועל.",
     zap: "https://www.zap.co.il/model.aspx?modelid=1243156", prices: [
@@ -19,7 +23,8 @@ const PRINTERS = [
       { store: "3DbotX", label: "קומבו AMS lite", ils: 1890, url: BOTX + "bambulab-a1-mini-combo-3d-printer" },
       { store: "ProMaker", ils: 1190, url: "https://promaker.co.il/product/%D7%9E%D7%93%D7%A4%D7%A1%D7%AA-%D7%AA%D7%9C%D7%AA-%D7%9E%D7%99%D7%9E%D7%93-bambu-lab-a1-mini-%D7%94%D7%9E%D7%93%D7%A4%D7%A1%D7%AA-%D7%94%D7%A7%D7%98%D7%A0%D7%94-%D7%94%D7%90%D7%95%D7%9C%D7%98%D7%99/" },
       { store: "ProMaker", label: "קומבו AMS lite", ils: 1990, url: "https://promaker.co.il/product/%D7%9E%D7%93%D7%A4%D7%A1%D7%AA-%D7%AA%D7%9C%D7%AA-%D7%9E%D7%99%D7%9E%D7%93-bambulab-a1-mini-combo-%D7%94%D7%97%D7%93%D7%A9%D7%94/" }] },
-  { id: "a1", name: "Bambu Lab A1", build: "256×256×256", tags: ["open", "color", "easy", "quiet"],
+  { id: "a1", name: "Bambu Lab A1", build: "256×256×256", tags: ["open", "color", "easy"],
+    g: { enclosed: 0, eng: 0.1, color: 0.7, nowaste: 0, big: 0.15, easy: 1, quiet: 0.6, tinker: 0.2 },
     why: "אותה חוויה של ה-mini עם משטח בגודל סטנדרטי. ברירת המחדל למתחיל.",
     watch: "פתוחה — לא ל-ABS/ASA. תופסת עומק על השולחן (המשטח נע קדימה-אחורה).",
     zap: null, prices: [
@@ -30,6 +35,7 @@ const PRINTERS = [
       { store: "ProMaker", ils: 1590, url: "https://promaker.co.il/product/%D7%9E%D7%93%D7%A4%D7%A1%D7%AA-%D7%AA%D7%9C%D7%AA-%D7%9E%D7%99%D7%9E%D7%93-bambulab-a1-%D7%94%D7%97%D7%93%D7%A9%D7%94/" },
       { store: "ProMaker", label: "קומבו AMS lite", ils: 2099, url: "https://promaker.co.il/product/%D7%9E%D7%93%D7%A4%D7%A1%D7%AA-%D7%AA%D7%9C%D7%AA-%D7%9E%D7%99%D7%9E%D7%93-bambulab-a1-combo-%D7%A2%D7%9D-%D7%99%D7%97%D7%99%D7%93%D7%AA-ams-%D7%94%D7%9E%D7%90%D7%A4%D7%A9%D7%A8%D7%AA-%D7%94%D7%93/" }] },
   { id: "a2l", name: "Bambu Lab A2L", build: "330×320×325", tags: ["open", "color", "big", "easy"],
+    g: { enclosed: 0, eng: 0.2, color: 0.8, nowaste: 0, big: 1, easy: 0.9, quiet: 0.5, tinker: 0.2 },
     why: "משטח 33 ס\"מ במחיר של מדפסת בינונית, עם אותה חוויית שימוש של Bambu. תומכת גם ב-AMS 2 Pro.",
     watch: "פתוחה, והמשטח מגיע רק ל-80°C — לא ל-ABS/ASA. משטח נע גדול: צריכה שולחן יציב ועמוק. דגם חדש — עדיין מעט ניסיון מצטבר.",
     zap: null, prices: [
@@ -37,20 +43,23 @@ const PRINTERS = [
       { store: "Bug", label: "קומבו AMS lite, הזמנה מוקדמת", ils: 2299, url: BUG + "bambulab/a2l/combo" },
       { store: "3DbotX", label: "קומבו AMS lite", ils: 2590, url: BOTX + "bambu-lab-a2l-combo-3d-printer" },
       { store: "ProMaker", label: "קומבו AMS lite", ils: 2390, url: "https://promaker.co.il/product/bambu-lab-a2l-combo-%D7%92%D7%93%D7%95%D7%9C%D7%94-%D7%99%D7%95%D7%AA%D7%A8-%D7%97%D7%9B%D7%9E%D7%94-%D7%99%D7%95%D7%AA%D7%A8-%D7%95%D7%A4%D7%A9%D7%95%D7%98%D7%94-%D7%99%D7%95%D7%AA%D7%A8-%D7%9C/" }] },
-  { id: "centauri", name: "Elegoo Centauri Carbon", build: "256×256×256", tags: ["enclosed", "eng", "easy"],
+  { id: "centauri", name: "Elegoo Centauri Carbon", build: "256×256×256", tags: ["enclosed", "eng", "easy"], colorAddon: 499, // CANVAS נמכר בנפרד
+    g: { enclosed: 0.8, eng: 0.7, color: 0.4, nowaste: 0, big: 0.15, easy: 0.8, quiet: 0.4, tinker: 0.4 },
     why: "סגורה ומהירה (CoreXY) במחיר של מדפסת פתוחה. הכי הרבה מדפסת לשקל.",
     watch: "רב-צבעי רק עם תוסף CANVAS שנקנה בנפרד (כ-₪499 בארץ). קהילה ותמיכה בארץ קטנות יותר משל Bambu. היצרן כבר לא מוכר אותה רשמית — בודקים שנשארה אחריות בארץ.",
     zap: null, prices: [
       { store: "ProMaker", ils: 1799, url: "https://promaker.co.il/product/elegoo-centauri-carbon-%D7%90%D7%9C%D7%92%D7%95-%D7%A1%D7%A0%D7%98%D7%95%D7%A8%D7%99-%D7%9E%D7%A6%D7%99%D7%91%D7%94-%D7%A1%D7%98%D7%A0%D7%93%D7%A8%D7%98-%D7%97%D7%93%D7%A9-%D7%91%D7%A9%D7%95%D7%A7/" },
       { store: "Beyond3D", label: "מחיר מבצע", ils: 1800, url: "https://beyond3d.co.il/product/elegoo-centauri-carbon-2/" }] },
   { id: "cc2", name: "Elegoo Centauri Carbon 2", build: "256×256×256", tags: ["enclosed", "color", "eng", "easy"],
+    g: { enclosed: 0.8, eng: 0.75, color: 0.8, nowaste: 0, big: 0.15, easy: 0.75, quiet: 0.5, tinker: 0.4 },
     why: "הדור השני: דיזה מוקשחת עד 350°C, סינון אוויר, ובקומבו מגיעה עם CANVAS — רב-צבעי של 4 גלילים. סגורה ורב-צבעית במחיר של מדפסת פתוחה.",
     watch: "בארץ נמכרת כרגע רק כקומבו. דגם חדש — פחות ניסיון מצטבר, וקהילה בארץ קטנה יותר משל Bambu.",
     zap: null, prices: [
       { store: "Beyond3D", label: "קומבו CANVAS, מבצע", ils: 2450, url: "https://beyond3d.co.il/product/elegoo-centauri-carbon-2-2/" },
       { store: "ProMaker", label: "קומבו CANVAS", ils: 2490, url: "https://promaker.co.il/product/%D7%9E%D7%93%D7%A4%D7%A1%D7%AA-%D7%AA%D7%9C%D7%AA-%D7%9E%D7%99%D7%9E%D7%93-%D7%90%D7%9C%D7%92%D7%95-%D7%A1%D7%98%D7%A0%D7%98%D7%95%D7%A8%D7%99-elegoo-centauri-carbon-2-combo-%D7%A2%D7%9D-%D7%9E%D7%A2/" },
       { store: "Panda3D", label: "קומבו CANVAS", ils: 2899, url: "https://panda3d.co.il/products/elegoo-centauri-carbon-2" }] },
-  { id: "p2s", name: "Bambu Lab P2S", build: "256×256×256", tags: ["enclosed", "color", "eng", "easy"],
+  { id: "p2s", name: "Bambu Lab P2S", build: "256×256×256", tags: ["enclosed", "color", "eng", "easy", "quiet"],
+    g: { enclosed: 0.8, eng: 0.75, color: 0.85, nowaste: 0, big: 0.15, easy: 1, quiet: 0.7, tinker: 0.2 },
     why: "סגורה, שקטה יחסית, רב-צבעי עם AMS. מתאימה גם לחלקים פונקציונליים ב-ABS/ASA.",
     watch: "עם AMS המחיר קופץ משמעותית.",
     zap: "https://www.zap.co.il/model.aspx?modelid=1263756", prices: [
@@ -62,7 +71,8 @@ const PRINTERS = [
       { store: "ProMaker", ils: 3390, url: "https://promaker.co.il/product/bambu-lab-p2s-%D7%94%D7%93%D7%95%D7%A8-%D7%94%D7%97%D7%93%D7%A9-%D7%A9%D7%9C-%D7%A1%D7%93%D7%A8%D7%AA-p-%D7%9E%D7%91%D7%A0%D7%94-%D7%A1%D7%92%D7%95%D7%A8-%D7%90%D7%A7%D7%A1%D7%98%D7%A8%D7%95%D7%93/" },
       { store: "ProMaker", label: "קומבו AMS 2 Pro", ils: 3990, url: "https://promaker.co.il/product/%D7%9E%D7%93%D7%A4%D7%A1%D7%AA-%D7%AA%D7%9C%D7%AA-%D7%9E%D7%99%D7%9E%D7%93-bambu-lab-p2s-ams-2-pro-combo-%D7%91%D7%A2%D7%9C%D7%AA-%D7%90%D7%A7%D7%A1%D7%98%D7%A8%D7%95%D7%93%D7%A8-servo-%D7%95%D7%9E/" },
       { store: "Spider3D", label: "קומבו AMS 2 Pro, הזמנה מוקדמת", ils: 5190, url: "https://www.spider3d.co.il/bambu-lab-p2s/" }] },
-  { id: "x2d", name: "Bambu Lab X2D", build: "256×256×260", tags: ["enclosed", "color", "eng", "easy"], part: { nowaste: 0.5 },
+  { id: "x2d", name: "Bambu Lab X2D", build: "256×256×260", tags: ["enclosed", "color", "eng", "easy", "quiet"],
+    g: { enclosed: 1, eng: 1, color: 0.9, nowaste: 0.5, big: 0.15, easy: 0.85, quiet: 0.7, tinker: 0.2 },
     why: "סגורה עם תא מחומם אקטיבית (65°C) ושתי דיזות — חומר תמיכה נפרד או שני צבעים בלי בזבוז של החלפות. בנויה לחומרים הנדסיים.",
     watch: "לפי Bambu עצמה הדיזה השנייה איטית יותר ובאיכות מעט נמוכה. בקומבו ה-AMS מזין רק דיזה אחת. בארץ נמכרת כרגע רק כקומבו. דגם חדש.",
     zap: null, prices: [
@@ -73,6 +83,7 @@ const PRINTERS = [
       { store: "ProMaker", label: "קומבו AMS 2 Pro", ils: 4990, url: "https://promaker.co.il/product/bambu-lab-x2d-%D7%A9%D7%AA%D7%99-%D7%93%D7%99%D7%96%D7%95%D7%AA-%D7%AA%D7%9E%D7%99%D7%9B%D7%95%D7%AA-%D7%A0%D7%A7%D7%99%D7%95%D7%AA-%D7%99%D7%95%D7%AA%D7%A8-%D7%95%D7%94%D7%A8%D7%91%D7%94-%D7%A4/" },
       { store: "Spider3D", label: "קומבו AMS 2 Pro", ils: 5200, url: "https://www.spider3d.co.il/bambu-lab-x2d-%D7%94%D7%93%D7%A4%D7%A1%D7%94-%D7%9B%D7%A4%D7%95%D7%9C%D7%94-%D7%97%D7%9B%D7%9E%D7%94-%D7%95%D7%90%D7%99%D7%9B%D7%95%D7%AA-%D7%A4%D7%A8%D7%99%D7%9E%D7%99%D7%95%D7%9D-%D7%9E/" }] },
   { id: "u1", name: "Snapmaker U1", build: "270×270×270", tags: ["color", "nowaste", "easy"],
+    g: { enclosed: 0.4, eng: 0.3, color: 0.9, nowaste: 1, big: 0.25, easy: 0.7, quiet: 0.4, tinker: 0.6 },
     why: "מחליף ראשים: 4 דיזות נפרדות, אחת לכל חומר. רב-צבעי כמעט בלי בזבוז ובלי \"מגדל ניקוי\" ענק — ומהיר בהרבה מ-AMS בהדפסות עם הרבה החלפות צבע. כיול אוטומטי, מבוסס Klipper, נתמכת ישירות ב-OrcaSlicer.",
     watch: "מגיעה עם דפנות צד ודלת, אבל המכסה העליון נמכר בנפרד — לא מדפסת סגורה במלואה ולא לחומרים הנדסיים. 4 ראשים = יותר חלקים לתחזק. יצרן חדש יחסית בארץ.",
     zap: null, prices: [
@@ -80,16 +91,19 @@ const PRINTERS = [
       { store: "Yazamco", ils: 4390, url: "https://3dny.co.il/?p=28934" },
       { store: "ProMaker", label: "כולל 4 גלילים מתנה", ils: 4590, url: "https://promaker.co.il/product/snapmaker-u1-%D7%9E%D7%93%D7%A4%D7%A1%D7%AA-%D7%AA%D7%9C%D7%AA-%D7%94%D7%9E%D7%99%D7%9E%D7%93-%D7%94%D7%97%D7%93%D7%A9%D7%94-%D7%A9%D7%A2%D7%95%D7%A9%D7%94-%D7%9E%D7%94%D7%A4%D7%9B%D7%94-%D7%91%D7%94/" }] },
   { id: "creality-hi", name: "Creality Hi", build: "260×260×300", tags: ["open", "color", "tinker"],
+    g: { enclosed: 0, eng: 0.2, color: 0.8, nowaste: 0, big: 0.2, easy: 0.6, quiet: 0.4, tinker: 0.9 },
     why: "רב-צבעי זול עם CFS, מערכת פתוחה יותר לשינויים.",
     watch: "פחות מלוטשת מ-Bambu. נכון לבדיקה האחרונה אזלה אצל המשווקים בארץ — לבדוק זמינות ואחריות לפני שמתאהבים.",
     zap: null, prices: [] },
-  { id: "core-one", name: "Prusa CORE One+", build: "250×220×270", tags: ["enclosed", "eng", "tinker", "quiet"],
+  { id: "core-one", name: "Prusa CORE One+", build: "250×220×270", tags: ["enclosed", "eng", "easy", "tinker", "quiet"],
+    g: { enclosed: 0.8, eng: 0.75, color: 0.4, nowaste: 0, big: 0.05, easy: 0.8, quiet: 0.9, tinker: 1 },
     why: "קוד פתוח, שירות מוערך, עובדת מלאה בלי ענן. חלקי הפלסטיק שלה מודפסים — אפשר להדפיס חלפים ושדרוגים לבד. למי שרוצה לשלוט במכונה.",
     watch: "יקרה ביחס למפרט. רב-צבעי (MMU3) נמכר בנפרד ודורש סבלנות.",
     zap: null, prices: [
       { store: "Copytech", label: "מורכבת", ils: 6440, url: "https://www.copytech.co.il/items/8350644" },
       { store: "Yazamco", label: "CORE One, מורכבת", ils: 6599, url: "https://3dny.co.il/product/prusa-core-one-%d7%9e%d7%93%d7%a4%d7%a1%d7%aa-%d7%aa%d7%9c%d7%aa-%d7%9e%d7%99%d7%9e%d7%93/" }] },
   { id: "k2-plus", name: "Creality K2 Plus", build: "350×350×350", tags: ["enclosed", "color", "big", "eng", "tinker"],
+    g: { enclosed: 1, eng: 0.9, color: 0.85, nowaste: 0, big: 1, easy: 0.5, quiet: 0.4, tinker: 0.9 },
     why: "משטח ענק סגור עם רב-צבעי. Klipper מתחת למכסה.",
     watch: "גדולה וכבדה. בקרת איכות פחות עקבית — לקנות ממשווק עם אחריות בארץ.",
     zap: null, prices: [
@@ -97,6 +111,7 @@ const PRINTERS = [
       { store: "KSP", label: "קומבו CFS", ils: 6979, url: "https://ksp.co.il/web/item/409012" },
       { store: "Spider3D", label: "קומבו CFS", ils: 6990, url: "https://www.spider3d.co.il/creality-k2-plus-cfs-combo/" }] },
   { id: "h2s", name: "Bambu Lab H2S", build: "340×320×340", tags: ["enclosed", "color", "big", "eng", "easy", "quiet"],
+    g: { enclosed: 1, eng: 0.95, color: 0.85, nowaste: 0, big: 1, easy: 1, quiet: 0.8, tinker: 0.2 },
     why: "משטח גדול, סגורה, אמינות של Bambu. למי שיודע שיצטרך גודל.",
     watch: "מחיר. בארץ נמכרת רק כקומבו. למתחיל שלא בטוח — A1 או P2S קודם. בגרסת הלייזר: עשן ולכלוך בכל המדפסת — ניקוי תכוף ואוורור חובה.",
     zap: "https://www.zap.co.il/model.aspx?modelid=1263757", prices: [
@@ -106,7 +121,8 @@ const PRINTERS = [
       { store: "Yazamco", label: "קומבו AMS 2 Pro + לייזר 10W", ils: 11449, url: "https://3dny.co.il/product/%d7%9e%d7%93%d7%a4%d7%a1%d7%aa-%d7%aa%d7%9c%d7%aa-%d7%9e%d7%99%d7%9e%d7%93-bambu-lab-h2s-laser-10w-full-combo/" },
       { store: "ProMaker", label: "קומבו AMS 2", ils: 6990, url: "https://promaker.co.il/product/bambu-lab-h2s-%D7%A2%D7%95%D7%A6%D7%9E%D7%AA-%D7%A1%D7%A8%D7%95%D7%95-%D7%93%D7%99%D7%95%D7%A7-%D7%9E%D7%95%D7%A9%D7%9C%D7%9D-%D7%95%D7%A0%D7%A4%D7%97-%D7%94%D7%93%D7%A4%D7%A1%D7%94-%D7%94%D7%92/" },
       { store: "Spider3D", label: "קומבו AMS 2 Pro, הזמנה מוקדמת", ils: 7490, url: "https://www.spider3d.co.il/bambu-lab-h2s-%D7%9E%D7%93%D7%A4%D7%A1%D7%AA-%D7%AA%D7%9C%D7%AA%D7%9E%D7%9E%D7%93-%D7%9E%D7%A7%D7%A6%D7%95%D7%A2%D7%99%D7%AA-%D7%9E%D7%94%D7%99%D7%A8%D7%94-%D7%95%D7%9E%D7%93%D7%95/" }] },
-  { id: "h2d", name: "Bambu Lab H2D", build: "325×320×325", tags: ["enclosed", "color", "big", "eng", "easy", "quiet"], part: { nowaste: 0.5 },
+  { id: "h2d", name: "Bambu Lab H2D", build: "325×320×325", tags: ["enclosed", "color", "big", "eng", "easy", "quiet"],
+    g: { enclosed: 1, eng: 1, color: 0.9, nowaste: 0.5, big: 1, easy: 0.9, quiet: 0.8, tinker: 0.2 },
     why: "שתי דיזות, תא מחומם ו-350°C: שני חומרים או צבעים בלי בזבוז בהחלפה ביניהם, וחומרים הנדסיים. הדגל של Bambu לבית ולסדנה.",
     watch: "מעל 2 צבעים — עדיין החלפות עם AMS ופסולת. מחיר. בגרסת הלייזר: עשן ולכלוך בכל המדפסת — ניקוי תכוף ואוורור חובה.",
     zap: null, prices: [
@@ -117,6 +133,7 @@ const PRINTERS = [
       { store: "Spider3D", label: "קומבו, הזמנה מוקדמת", ils: 11290, url: "https://www.spider3d.co.il/bambu-lab-h2d-%D7%9E%D7%A8%D7%9B%D7%96-%D7%99%D7%99%D7%A6%D7%95%D7%A8-%D7%90%D7%99%D7%A9%D7%99-%D7%9E%D7%A9%D7%95%D7%9C%D7%91-%D7%94%D7%93%D7%A4%D7%A1%D7%AA-%D7%AA%D7%9C%D7%AA-%D7%9E%D7%99%D7%9E/" },
       { store: "Yazamco", label: "קומבו", ils: 11499, url: "https://3dny.co.il/product/%d7%9e%d7%93%d7%a4%d7%a1%d7%aa-%d7%aa%d7%9c%d7%aa-%d7%9e%d7%99%d7%9e%d7%93-bambu-lab-h2d-combo/" }] },
   { id: "h2c", name: "Bambu Lab H2C", build: "330×320×325", tags: ["enclosed", "color", "nowaste", "big", "eng", "easy", "quiet"],
+    g: { enclosed: 1, eng: 1, color: 1, nowaste: 0.8, big: 1, easy: 0.8, quiet: 0.8, tinker: 0.2 },
     why: "H2D עם מחליף דיזות Vortek: כמה ראשים חמים שמתחלפים אוטומטית — רב-צבעי עם הרבה פחות פסולת וזמן החלפה.",
     watch: "הכי יקרה בשאלון. דגם חדש — מעט ניסיון מצטבר. למתחיל זה הרבה כסף; H2S או P2S מספיקות לרוב האנשים.",
     zap: null, prices: [
@@ -136,15 +153,17 @@ const QUESTIONS = [
     ["₪2,500 עד ₪5,000", { min: 1875, max: 5000 }], ["₪5,000 עד ₪8,000", { min: 3750, max: 8000 }], ["מעל ₪8,000", { min: 8000, max: Infinity }]] },
   { id: "use", q: "מה בעיקר תדפיסו?", a: [
     ["צעצועים, קישוטים, גאדג'טים לבית", { want: ["easy"] }],
-    ["חלקים פונקציונליים — לרכב, לכלים, לחוץ", { want: ["enclosed", "eng"] }],
+    // שמש ישראלית + רכב = ABS/ASA, שדורשים סגורה — מגבלה פיזית, משקל כפול
+    ["חלקים פונקציונליים — לרכב, לכלים, לחוץ", { want: ["enclosed", "enclosed", "eng", "eng"] }],
     // גודל משטח הוא מגבלה פיזית, לא העדפה — משקל גבוה כדי שלא יפסיד לנוחות (test/quiz.test.js)
-    ["דברים גדולים — קסדות, קוספליי, ארגוניות", { want: ["big", "big", "big"] }],
+    ["דברים גדולים — קסדות, קוספליי, ארגוניות", { want: ["big", "big", "big", "big"] }],
     ["מיניאטורות ופרטים זעירים", { want: ["easy"], resin: true }]] },
   { id: "color", q: "כמה חשוב לכם רב-צבעי?", a: [
     // nowaste = מחליף ראשים / דיזות נפרדות: בלי ניקוי חומר בכל החלפה — יתרון אמיתי למי שמדפיס הרבה ברב-צבעי
-    ["חובה", { want: ["color", "color", "nowaste"] }], ["נחמד שיהיה בעתיד", { want: ["color"] }], ["לא מעניין", {}]] },
+    ["חובה", { want: ["color", "color", "nowaste"], combo: true }], ["נחמד שיהיה בעתיד", { want: ["color"] }], ["לא מעניין", {}]] },
   { id: "place", q: "איפה המדפסת תעמוד?", a: [
-    ["חדר מגורים / חדר ילדים", { want: ["enclosed", "quiet"] }],
+    // ליד ילדים סגורה היא בטיחות (חם, חלקים נעים, אדים) — משקל כפול, שלא תפסיד לנוחות בהפרש של עשיריות
+    ["חדר מגורים / חדר ילדים", { want: ["enclosed", "enclosed", "quiet"] }],
     ["חדר עבודה", { want: ["quiet"] }], ["מחסן / מרפסת / סדנה", {}]] },
   { id: "style", q: "מה מתאר אתכם יותר?", a: [
     ["רוצה שזה פשוט יעבוד", { want: ["easy", "easy"] }],

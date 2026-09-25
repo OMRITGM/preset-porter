@@ -13,10 +13,12 @@ const has = (p, t) => p.tags.includes(t);
 
 test(`covers all ${all.length} answer combinations`, () => assert.equal(cases.length, QUESTIONS.reduce((n, Q) => n * Q.a.length, 1)));
 
-test("every combination returns at least 2 printers, no duplicates", () => {
+// One card is allowed only when the budget holds a single printer and nothing over it is at least as good
+// (e.g. up to ₪1,200: A1 mini only — showing a pricier, worse-matching A1 would be "pay more, get less").
+test("every combination returns printers (2+ when the budget holds 2+), no duplicates", () => {
   for (const { a, R } of cases) {
-    const s = shown(R);
-    assert.ok(s.length >= 2, `only ${s.length} for: ${label(a)}`);
+    const s = shown(R), inBudget = PRINTERS.filter((p) => R.price(p) !== null && R.price(p) >= R.min && R.price(p) <= R.max).length;
+    assert.ok(s.length >= Math.min(2, Math.max(1, inBudget)), `only ${s.length} for: ${label(a)}`);
     assert.equal(new Set(s).size, s.length, `duplicate printer for: ${label(a)}`);
     assert.ok(s.every((p) => R.price(p) !== null), `unpriced printer shown for: ${label(a)}`);
   }
@@ -30,8 +32,8 @@ test("budget: in-budget picks respect the range, extras stay close to it", () =>
   }
 });
 
-test("regression (Facebook report): entry-level A1 mini only for the lowest budget", () => {
-  for (const { a, R } of cases) if (a[0] > 0) assert.ok(!shown(R).some((p) => p.id === "a1-mini"), `A1 mini for: ${label(a)}`);
+test("regression (Facebook report): entry-level A1 mini only for the two lowest budgets (its combo is ₪1,449)", () => {
+  for (const { a, R } of cases) if (a[0] > 1) assert.ok(!shown(R).some((p) => p.id === "a1-mini"), `A1 mini for: ${label(a)}`);
 });
 
 test("the best match is ranked first and match % is sane", () => {
@@ -51,20 +53,29 @@ const must = [
   ["living room / kids room -> enclosed (unless a big bed is required)", (a) => a[3] === 0 && a[1] !== 2, (p) => has(p, "enclosed")],
 ];
 
-test("top pick is never beaten by a cheaper extra with a higher match", () => {
-  for (const { a, R } of cases) for (const p of R.under)
-    assert.ok(R.score(p) <= R.score(R.top[0]), `${p.name} (${R.pct(p)}%) outranks the best match ${R.top[0].name} (${R.pct(R.top[0])}%): ${label(a)}`);
+// A below-budget extra may outrank the top pick (e.g. "above ₪8,000" + toys: H2S fits better than H2D) — it's shown,
+// but the card must say so instead of silently sitting under a lower-% "best match" badge.
+test("a cheaper extra that outranks the top pick is labelled as such in the UI", () => {
+  const app = require("fs").readFileSync(require("path").join(__dirname, "../app.js"), "utf8");
+  assert.ok(app.includes("ומתאימה לתשובות שלכם אפילו יותר"));
+  for (const { a, R } of cases) for (const p of R.under) assert.ok(R.top[0], `below-budget extra with no top pick: ${label(a)}`);
 });
 for (const [name, applies, ok] of must) test(`hard requirement: ${name}`, () => {
   const bad = cases.filter(({ a, R }) => applies(a) && R.top.length && !ok(R.top[0]) && R.top.some(ok)) // a better-fitting in-budget printer was ranked below
     .map(({ a, R }) => `${label(a)} -> ${R.top[0].name}`);
   assert.deepEqual(bad, [], bad.slice(0, 5).join("\n"));
+  // and if any printer near the budget (60% of the floor .. max) satisfies it, one of them is on screen (Ramsay: hidden A2L)
+  const hidden = cases.filter(({ a, R }) => applies(a) && !shown(R).some(ok) && PRINTERS.some((p) => ok(p) && R.price(p) !== null && R.price(p) >= R.min * 0.6 && R.price(p) <= R.max))
+    .map(({ a }) => label(a));
+  assert.deepEqual(hidden, [], hidden.slice(0, 5).join("\n"));
 });
 
-test("resin note iff miniatures; stretch only when strictly better", () => {
+test("resin note iff miniatures; stretch only when clearly (5+ points) better", () => {
   for (const { a, R } of cases) {
     assert.equal(R.resin, a[1] === 3, label(a));
-    if (R.stretch) assert.ok(R.score(R.stretch) > R.score(R.top[0]) && !R.top.includes(R.stretch), label(a));
+    const ref = R.top[0] || R.fill[0]; // nothing in budget -> compared with the closest over-budget pick
+    if (R.stretch) assert.ok(!shown({ ...R, stretch: null }).includes(R.stretch), label(a));
+    if (R.stretch && R.top[0]) assert.ok(R.score(R.stretch) - R.score(ref) >= R.want.length * 50, label(a));
   }
 });
 
@@ -86,6 +97,23 @@ test("regression (Facebook report): above ₪8,000 the picks cost above ₪8,000
 test("regression (Facebook report): with multi-colour a must, dual-nozzle H2D beats single-nozzle H2S", () => {
   for (const { a, R } of cases) if (a[2] === 0) {
     const h2d = PRINTERS.find((p) => p.id === "h2d"), h2s = PRINTERS.find((p) => p.id === "h2s");
-    assert.ok(R.pct(h2d) > R.pct(h2s), `H2D ${R.pct(h2d)}% vs H2S ${R.pct(h2s)}%: ${label(a)}`);
+    assert.ok(R.score(h2d) > R.score(h2s), `H2D ${R.score(h2d)} vs H2S ${R.score(h2s)}: ${label(a)}`);
   }
+});
+
+const TRAITS = ["enclosed", "eng", "color", "nowaste", "big", "easy", "quiet", "tinker"];
+test("every printer has all graded traits in [0,1], and its display tags match the grades (tag <=> grade >= 0.7)", () => {
+  for (const p of PRINTERS) for (const t of TRAITS) {
+    assert.ok(typeof p.g?.[t] === "number" && p.g[t] >= 0 && p.g[t] <= 1, `${p.name}: g.${t} = ${p.g?.[t]}`);
+    assert.equal(has(p, t), p.g[t] >= 0.7, `${p.name}: tag "${t}" vs grade ${p.g[t]}`);
+  }
+});
+
+test("'slightly over budget' never clearly (5+ points) outranks the best-match badge", () => {
+  for (const { a, R } of cases) if (R.top[0]) for (const p of R.fill) assert.ok(R.score(p) - R.score(R.top[0]) < R.want.length * 50, `${p.name} beats ${R.top[0].name}: ${label(a)}`);
+});
+
+test("regression (Ramsay review): multi-colour a must is priced as the multi-colour combo", () => {
+  const mini = PRINTERS.find((p) => p.id === "a1-mini");
+  for (const { a, R } of cases) if (a[2] === 0) assert.ok(R.price(mini) > 1200, `A1 mini priced bare for: ${label(a)}`);
 });

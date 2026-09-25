@@ -23,11 +23,10 @@ $("#theme").onclick = () => {
   store.set("theme", (document.documentElement.dataset.theme = dark ? "light" : "dark"));
 };
 
-function card(p, extra = "", pct = null) {
-  const m = minPrice(p);
+function card(p, extra = "", pct = null, m = minPrice(p), bundle = false) {
   return `<article class="card${extra.includes("best") ? " top" : ""}">${extra}
     <h3><bdi>${p.name}</bdi></h3>${pct === null ? "" : `<p class="match" style="--p:${pct}"><i></i><span>התאמה <b>${pct}%</b></span></p>`}
-    <p class="meta"><span dir="ltr">${p.build}</span> מ"מ · ${m ? "מ-" + fmt(m) : "מחיר: בדקו בחנות"}</p>
+    <p class="meta"><span dir="ltr">${p.build}</span> מ"מ · ${m ? "מ-" + fmt(m) + (bundle ? (p.colorAddon && m > minPrice(p) ? " (כולל תוסף רב-צבעי)" : " (קומבו רב-צבעי)") : "") : "מחיר: בדקו בחנות"}</p>
     <p class="tags">${[...new Set(p.tags)].map((t) => TAG_LINK[t] ? `<a href="basics.html#${TAG_LINK[t]}" title="מה זה?"><span>${TAG_HE[t]} ⓘ</span></a>` : `<span>${TAG_HE[t]}</span>`).join("")}</p>
     <p>${p.why}</p><p class="watch"><b>שימו לב:</b> ${p.watch}</p>
     <p><a href="index.html#p-${p.id}">מחירים בארץ ←</a></p></article>`;
@@ -72,10 +71,12 @@ if ($("#result")) {
   if (!R) location.replace("index.html");
   else $("#result").innerHTML =
     (R.resin ? `<p class="note">למיניאטורות ברמת פירוט גבוהה שווה לבדוק גם מדפסת שרף (Resin) — טכנולוגיה אחרת, עם ריח וכימיקלים. ההמלצות כאן הן למדפסות פילמנט.</p>` : "") +
-    R.top.map((p, i) => card(p, i ? "" : '<p class="best">ההתאמה הכי טובה</p>', R.pct(p))).join("") +
-    R.fill.map((p) => card(p, '<p class="over">מעט מעל התקציב שבחרתם</p>', R.pct(p))).join("") +
-    R.under.map((p) => card(p, '<p class="over">זולה מהתקציב — אפשר לחסוך</p>', R.pct(p))).join("") +
-    (R.stretch ? `<h2>אם אפשר למתוח את התקציב</h2>${card(R.stretch, "", R.pct(R.stretch))}` : "");
+    (!R.top.length ? `<p class="note">בתקציב הזה לא מצאתי מדפסת שעונה על מה שביקשתם. אלה הכי קרובות.</p>` :
+      R.low ? `<p class="note">בתקציב הזה ההתאמה חלקית — שימו לב לסעיף "שימו לב" בכל כרטיס, ולכרטיסים למטה.</p>` : "") +
+    R.top.map((p, i) => card(p, i ? "" : '<p class="best">ההתאמה הכי טובה בתקציב</p>', R.pct(p), R.price(p), R.bundled(p))).join("") +
+    R.fill.map((p) => card(p, '<p class="over">מעט מעל התקציב שבחרתם</p>', R.pct(p), R.price(p), R.bundled(p))).join("") +
+    R.under.map((p) => card(p, `<p class="over">${R.score(p) > R.score(R.top[0]) ? "זולה מהתקציב — ומתאימה לתשובות שלכם אפילו יותר" : "זולה מהתקציב — אפשר לחסוך"}</p>`, R.pct(p), R.price(p), R.bundled(p))).join("") +
+    (R.stretch ? `<h2>אם אפשר למתוח את התקציב</h2>${card(R.stretch, "", R.pct(R.stretch), R.price(R.stretch), R.bundled(R.stretch))}` : "");
 }
 
 // ---- קטלוג מלא (catalog.html)
